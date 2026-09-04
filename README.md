@@ -1,4 +1,4 @@
-# AI CV Generator (My.CV.Gen)
+# My.CV.Gen
 
 A modern web application that uses AI (OpenAI GPT-4 & Anthropic Claude) to help users create professional, fully customizable CVs in minutes.
 
