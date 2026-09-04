@@ -1,0 +1,10 @@
+# Vercel build exclusions
+.git
+.next
+node_modules
+dev-log.txt
+cf-tunnel.log
+cloudflared-log.txt
+cloudflared-log.txt.err
+*.pid
+start-tunnel.bat
