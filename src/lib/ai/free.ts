@@ -87,6 +87,6 @@ export async function generateWithFreeAI(
   }
 
   throw new Error(
-    `All free AI endpoints failed. ${errors.join(' | ')}`
+    `The free AI service is temporarily unavailable. Please try again in a few minutes. (${errors.join(' | ')})`
   )
 }
