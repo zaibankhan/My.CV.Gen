@@ -31,10 +31,12 @@ ${userInput.jobDescription}
 
 Tailor the content specifically for this job description, incorporating relevant keywords.` : ''}
 
-${hasReference ? `USER'S REFERENCE MATERIAL (extracted from "${userInput.referenceFileName || 'uploaded document'}"):
-Use this as the authoritative source of the user's real experience, education, skills, and achievements.
-Fill in any missing details from the CV draft above using ONLY facts present in this reference material.
-Do not invent credentials that are not found here.
+${hasReference ? `USER'S EXISTING CV (extracted from "${userInput.referenceFileName || 'uploaded document'}"):
+This is the user's real CV. Treat it as the SINGLE SOURCE OF TRUTH for their facts.
+- Copy every real detail: full name of companies, job titles, employment dates, locations, degrees, institutions, and all skills listed.
+- Rewrite each entry professionally: convert plain responsibilities into achievement-oriented, ATS-friendly bullet points using strong action verbs, and keep any numbers/percentages exactly as stated.
+- Do NOT invent employers, titles, dates, degrees, or skills that are not present in the reference.
+- If the reference lacks a target job or skills, keep only what is there rather than fabricating.
 REFERENCE MATERIAL:
 ${userInput.referenceText}
 ` : ''}
@@ -89,6 +91,43 @@ Return as JSON: {"technical": ["skills"], "soft": ["skills"]}`
   }
 
   return sectionPrompts[section] || 'Improve this CV content to be more professional.'
+}
+
+export function parseDocumentPrompt(text: string): string {
+  return `Extract the professional information from the document below and structure it into CV data.
+Only use information that is actually present in the document. Do not invent or guess details.
+If a section is missing, return empty arrays or empty string for it.
+
+Document text:
+${text.slice(0, 14000)}
+
+Return ONLY valid JSON in this EXACT format:
+{
+  "summary": "2 sentence professional summary based on the document (or empty string)",
+  "experience": [
+    {
+      "jobTitle": "string",
+      "company": "string",
+      "startDate": "string (YYYY-MM or YYYY-MM-DD, or empty)",
+      "endDate": "string (use empty string if current role)",
+      "location": "string",
+      "bullets": ["2-5 key responsibilities or achievements as written, cleaned up"]
+    }
+  ],
+  "skills": {
+    "technical": ["skills from the document"],
+    "soft": ["soft skills from the document"]
+  },
+  "education": [
+    {
+      "degree": "string",
+      "institution": "string",
+      "startDate": "string",
+      "endDate": "string",
+      "description": "string"
+    }
+  ]
+}`;
 }
 
 export function improveTextPrompt(text: string, style: string): string {

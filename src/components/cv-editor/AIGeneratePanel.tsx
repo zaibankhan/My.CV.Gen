@@ -3,12 +3,12 @@
 import { useState, useRef } from 'react'
 import {
   Sparkles,
-  Bot,
   Loader2,
   Upload,
   FileText,
   X,
-  CheckCircle2
+  CheckCircle2,
+  Wand2
 } from 'lucide-react'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
@@ -18,15 +18,18 @@ import {
   modelsForProvider,
   type AIModelInfo
 } from '@/lib/constants/aiModels'
-import type { AIProvider } from '@/types/ai'
+import { TEMPLATES } from '@/lib/constants/templates'
+import { cn } from '@/lib/utils'
 
 export function AIGeneratePanel() {
   const {
+    content,
+    setContent,
+    designConfig,
+    setDesignConfig,
     jobDescription,
     setJobDescription,
-    activeProvider,
     activeModel,
-    setActiveProvider,
     setActiveModel,
     referenceFile,
     setReferenceFile
@@ -35,21 +38,20 @@ export function AIGeneratePanel() {
 
   const [expanded, setExpanded] = useState(true)
   const [uploading, setUploading] = useState(false)
+  const [importing, setImporting] = useState(false)
   const [uploadError, setUploadError] = useState('')
+  const [importNotice, setImportNotice] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const availableModels = modelsForProvider(activeProvider)
+  const availableModels = modelsForProvider('groq')
   const selectedModel: AIModelInfo | undefined = availableModels.find(
     (m) => m.id === activeModel
   )
 
-  const handleProviderChange = (value: string) => {
-    setActiveProvider(value as AIProvider)
-  }
-
   const handleFile = async (file: File | null) => {
     if (!file) return
     setUploadError('')
+    setImportNotice('')
     setUploading(true)
     try {
       const formData = new FormData()
@@ -66,15 +68,95 @@ export function AIGeneratePanel() {
         throw new Error(data.error || 'Failed to read the file.')
       }
 
+      const text = data.text.slice(0, 12000)
       setReferenceFile({
         fileName: data.fileName,
-        text: data.text.slice(0, 12000)
+        text
       })
+
+      setUploading(false)
+      await importDocument(data.text)
     } catch (err: any) {
       setUploadError(err.message || 'Failed to read the file.')
     } finally {
       setUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const importDocument = async (text: string) => {
+    setImporting(true)
+    try {
+      const response = await fetch('/api/ai/parse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.data) {
+        throw new Error(data.error || 'Could not import the document.')
+      }
+
+      const parsed = data.data
+      const parts: string[] = []
+      if (parsed.summary) parts.push('summary')
+      if (parsed.experience?.length) {
+        parts.push(`${parsed.experience.length} job${parsed.experience.length > 1 ? 's' : ''}`)
+      }
+      if (parsed.education?.length) {
+        parts.push(`${parsed.education.length} education${parsed.education.length > 1 ? ' entries' : ' entry'}`)
+      }
+      const skillCount =
+        (parsed.skills?.technical?.length || 0) + (parsed.skills?.soft?.length || 0)
+      if (skillCount) parts.push(`${skillCount} skills`)
+
+      setContent({
+        summary: parsed.summary || content.summary,
+        experience:
+          parsed.experience?.length > 0
+            ? parsed.experience.map((exp: any) => ({
+                id: `exp-${Date.now()}-${Math.random()}`,
+                jobTitle: exp.jobTitle || '',
+                company: exp.company || '',
+                startDate: exp.startDate || '',
+                endDate: exp.endDate || '',
+                location: exp.location || '',
+                bullets: Array.isArray(exp.bullets) ? exp.bullets : []
+              }))
+            : content.experience,
+        skills:
+          parsed.skills && skillCount > 0
+            ? {
+                technical: parsed.skills.technical || [],
+                soft: parsed.skills.soft || []
+              }
+            : content.skills,
+        education:
+          parsed.education?.length > 0
+            ? parsed.education.map((edu: any) => ({
+                id: `edu-${Date.now()}-${Math.random()}`,
+                degree: edu.degree || '',
+                institution: edu.institution || '',
+                startDate: edu.startDate || '',
+                endDate: edu.endDate || '',
+                description: edu.description || ''
+              }))
+            : content.education
+      })
+
+      setImportNotice(
+        parts.length > 0
+          ? `Copied into your editor: ${parts.join(', ')}.`
+          : 'Document attached — AI will use it as the source when writing.'
+      )
+    } catch (err: any) {
+      setImportNotice(
+        'File attached. AI will reference this document when writing your CV.'
+      )
+    } finally {
+      setImporting(false)
     }
   }
 
@@ -87,7 +169,7 @@ export function AIGeneratePanel() {
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary-600" />
           <span className="text-sm font-semibold text-primary-800">
-            AI Assistant
+            Professional AI Writer
           </span>
         </div>
         <span className="text-gray-400 text-sm">{expanded ? '▾' : '▸'}</span>
@@ -102,18 +184,18 @@ export function AIGeneratePanel() {
             <Textarea
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="Paste the job description to tailor your CV for a specific role..."
-              className="min-h-[80px] text-xs"
+              placeholder="Paste the job you're applying for — we tailor your CV to match it perfectly..."
+              className="min-h-[72px] text-xs"
             />
             <p className="mt-1 text-[11px] text-gray-400">
-              AI will optimize content, keywords, and phrasing for this job.
+              The AI optimizes keywords, skills, and phrasing for this role.
             </p>
           </div>
 
-          {/* Reference document upload */}
+          {/* Import existing CV */}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">
-              Upload Your Existing CV or Notes
+              Import Your Existing CV
             </label>
             {referenceFile ? (
               <div className="flex items-start justify-between gap-2 bg-green-50 border border-green-200 rounded-lg p-3">
@@ -124,13 +206,16 @@ export function AIGeneratePanel() {
                       {referenceFile.fileName}
                     </p>
                     <p className="text-[11px] text-green-600">
-                      {referenceFile.text.length.toLocaleString()} characters
-                      extracted — AI will use it as reference.
+                      {importNotice ||
+                        'AI will use this document as your source of truth.'}
                     </p>
                   </div>
                 </div>
                 <button
-                  onClick={() => setReferenceFile(null)}
+                  onClick={() => {
+                    setReferenceFile(null)
+                    setImportNotice('')
+                  }}
                   className="text-green-700 hover:text-green-900 shrink-0"
                   aria-label="Remove file"
                 >
@@ -140,22 +225,24 @@ export function AIGeneratePanel() {
             ) : (
               <button
                 onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
+                disabled={uploading || importing}
                 className="w-full border-2 border-dashed border-gray-300 hover:border-primary-400 rounded-lg p-4 flex flex-col items-center gap-1 transition-colors disabled:opacity-50"
               >
-                {uploading ? (
+                {uploading || importing ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin text-primary-600" />
-                    <span className="text-xs text-gray-500">Reading file...</span>
+                    <span className="text-xs text-gray-500">
+                      {uploading ? 'Reading file...' : 'Copying your details...'}
+                    </span>
                   </>
                 ) : (
                   <>
                     <Upload className="w-5 h-5 text-gray-400" />
                     <span className="text-xs font-medium text-gray-600">
-                      Upload a reference document
+                      Upload your CV — we copy your details and upgrade it
                     </span>
                     <span className="text-[11px] text-gray-400">
-                      PDF, DOCX or TXT (max 5MB) — we&apos;ll extract the text
+                      PDF, DOCX or TXT (max 5MB)
                     </span>
                   </>
                 )}
@@ -172,7 +259,7 @@ export function AIGeneratePanel() {
               <div className="mt-1">
                 <FileText className="inline w-3 h-3 text-primary-600 mr-1" />
                 <span className="text-[11px] text-gray-500">
-                  AI fills missing details from this document.
+                  Your details are kept intact while the wording is upgraded.
                 </span>
               </div>
             )}
@@ -181,47 +268,61 @@ export function AIGeneratePanel() {
             )}
           </div>
 
-          {/* AI Provider */}
+          {/* Model */}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">
-              AI Provider
-            </label>
-            <select
-              value={activeProvider}
-              onChange={(e) => handleProviderChange(e.target.value)}
-              className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
-            >
-              <option value="groq">Groq — Free AI (GPT-OSS)</option>
-              <option value="free">Free AI — No Key Needed</option>
-              <option value="openai">OpenAI (GPT-4)</option>
-              <option value="anthropic">Anthropic (Claude)</option>
-            </select>
-          </div>
-
-          {/* Model selection */}
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Model
+              Writing Quality
             </label>
             <select
               value={activeModel}
               onChange={(e) => setActiveModel(e.target.value)}
               className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             >
-              {(activeProvider === 'anthropic'
-                ? [...availableModels].reverse()
-                : availableModels
-              ).map((model) => (
+              {availableModels.map((model) => (
                 <option key={model.id} value={model.id}>
-                  {model.name}
+                  {model.name.replace('(FREE)', '').trim()}
                   {model.recommended ? '  (Recommended)' : ''}
                 </option>
               ))}
             </select>
             <p className="mt-1 text-[11px] text-gray-400">
               {selectedModel?.description ||
-                `Using ${activeProvider === 'openai' ? 'GPT-4' : activeProvider === 'anthropic' ? 'Claude' : activeProvider === 'groq' ? 'Groq' : 'the free AI gateway'} to write your CV.`}
+                'The smartest available model writes your CV.'}
             </p>
+          </div>
+
+          {/* Design */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              CV Design
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {TEMPLATES.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setDesignConfig({ template: t.id })}
+                  className={cn(
+                    'p-2 border-2 rounded-lg text-left transition-all',
+                    designConfig.template === t.id
+                      ? 'border-primary-600 bg-primary-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  )}
+                >
+                  <div
+                    className="h-10 rounded mb-1.5 flex items-end p-1.5"
+                    style={{ background: t.defaultColors[0] }}
+                  >
+                    <div className="w-full space-y-0.5">
+                      <div className="h-1 w-2/3 bg-white/80 rounded" />
+                      <div className="h-0.5 w-1/2 bg-white/50 rounded" />
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-medium leading-tight block">
+                    {t.name}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <Button
@@ -232,12 +333,12 @@ export function AIGeneratePanel() {
             {isGenerating ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Generating...
+                Writing your professional CV...
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4" />
-                Generate Full CV
+                <Wand2 className="w-4 h-4" />
+                Write Professional CV
               </>
             )}
           </Button>

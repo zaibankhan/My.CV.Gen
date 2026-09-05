@@ -9,7 +9,8 @@ import {
   regenerateSectionPrompt,
   improveTextPrompt,
   suggestSkillsPrompt,
-  calculateATSScorePrompt
+  calculateATSScorePrompt,
+  parseDocumentPrompt
 } from './prompts'
 
 interface GenerateInput {
@@ -99,6 +100,21 @@ export class AIProviderFactory {
     model?: string
   ): Promise<AIResponse<any>> {
     const prompt = calculateATSScorePrompt(content, jobDescription)
+
+    const result = await runProvider(provider, prompt, model)
+
+    return {
+      data: JSON.parse(result.content),
+      metadata: result.usage
+    }
+  }
+
+  static async parseDocument(
+    provider: AIProvider,
+    text: string,
+    model?: string
+  ): Promise<AIResponse<any>> {
+    const prompt = parseDocumentPrompt(text)
 
     const result = await runProvider(provider, prompt, model)
 
