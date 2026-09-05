@@ -36,6 +36,7 @@ This is the user's real CV. Treat it as the SINGLE SOURCE OF TRUTH for their fac
 - Copy every real detail: full name of companies, job titles, employment dates, locations, degrees, institutions, and all skills listed.
 - Rewrite each entry professionally: convert plain responsibilities into achievement-oriented, ATS-friendly bullet points using strong action verbs, and keep any numbers/percentages exactly as stated.
 - Do NOT invent employers, titles, dates, degrees, or skills that are not present in the reference.
+- Include EVERY experience entry and EVERY education entry from the reference. Never merge, drop, or skip any of them — each role keeps its own company, title, dates, location, and bullets.
 - If the reference lacks a target job or skills, keep only what is there rather than fabricating.
 REFERENCE MATERIAL:
 ${userInput.referenceText}
