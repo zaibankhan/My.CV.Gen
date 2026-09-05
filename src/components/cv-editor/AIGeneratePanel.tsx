@@ -191,8 +191,8 @@ export function AIGeneratePanel() {
               onChange={(e) => handleProviderChange(e.target.value)}
               className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             >
+              <option value="groq">Groq — Free AI (GPT-OSS)</option>
               <option value="free">Free AI — No Key Needed</option>
-              <option value="groq">Groq — Free AI (Llama)</option>
               <option value="openai">OpenAI (GPT-4)</option>
               <option value="anthropic">Anthropic (Claude)</option>
             </select>

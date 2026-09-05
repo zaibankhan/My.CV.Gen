@@ -54,23 +54,23 @@ export const AI_MODELS: AIModelInfo[] = [
     description: 'Fast, lightweight model for quick iterations'
   },
   {
-    id: 'llama-3.3-70b-versatile',
-    name: 'Llama 3.3 70B (FREE)',
+    id: 'openai/gpt-oss-20b',
+    name: 'GPT-OSS 20B (FREE)',
     provider: 'groq',
-    description: 'Fast, free, high-quality model by Meta via Groq',
+    description: 'Fast, free, high-quality model by OpenAI via Groq',
     recommended: true
   },
   {
-    id: 'llama-3.1-8b-instant',
-    name: 'Llama 3.1 8B (FREE)',
+    id: 'openai/gpt-oss-120b',
+    name: 'GPT-OSS 120B (FREE)',
     provider: 'groq',
-    description: 'Ultra-fast free model for quick drafts'
+    description: 'Larger, more capable free model for detailed CVs'
   },
   {
-    id: 'gpt-oss-20b',
-    name: 'GPT-OSS 20B (FREE)',
+    id: 'qwen/qwen3.8-27b',
+    name: 'Qwen 3.8 27B (FREE)',
     provider: 'groq',
-    description: 'Open-source OpenAI model, completely free on Groq'
+    description: 'Open-source Qwen model, free on Groq'
   },
   {
     id: 'gpt-4o-mini',
@@ -96,7 +96,7 @@ export const AI_MODELS: AIModelInfo[] = [
 export const DEFAULT_MODEL: Record<AIProvider, string> = {
   openai: 'gpt-4o',
   anthropic: 'claude-3-5-sonnet-20241022',
-  groq: 'llama-3.3-70b-versatile',
+  groq: 'openai/gpt-oss-20b',
   free: 'gpt-4o-mini'
 }
 

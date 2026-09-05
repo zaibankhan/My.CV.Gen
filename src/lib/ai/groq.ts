@@ -4,7 +4,7 @@ import type { AIUsageMetadata } from '@/types/ai'
 
 export async function generateWithGroq(
   prompt: string,
-  model = 'llama-3.3-70b-versatile'
+  model = 'openai/gpt-oss-20b'
 ): Promise<{ content: string; usage: AIUsageMetadata }> {
   const apiKey = process.env.GROQ_API_KEY
 

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     jobDescription,
     tone,
     industries,
-    provider = 'free',
+    provider = 'groq',
     model,
     referenceText,
     referenceFileName,
