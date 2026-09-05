@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
     section,
     currentContent,
     jobDescription,
-    provider = 'openai',
+    provider = 'groq',
+    model,
     cvId
   } = body
 
@@ -45,7 +46,8 @@ export async function POST(request: NextRequest) {
       provider,
       section,
       currentContent,
-      jobDescription
+      jobDescription,
+      model
     )
 
     await logAIGeneration({

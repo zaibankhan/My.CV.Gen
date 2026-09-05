@@ -4,14 +4,15 @@ import type { AIUsageMetadata } from '@/types/ai'
 
 export async function generateWithAnthropicClaude(
   prompt: string,
-  model = 'claude-3-opus-20240229'
+  model = 'claude-3-5-sonnet-20241022'
 ): Promise<{ content: string; usage: AIUsageMetadata }> {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  const apiKey = process.env.ANTHROPIC_API_KEY
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!apiKey) {
     throw new Error('ANTHROPIC_API_KEY is not configured')
   }
 
+  const anthropic = new Anthropic({ apiKey })
   const startTime = Date.now()
 
   try {

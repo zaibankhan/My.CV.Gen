@@ -58,6 +58,61 @@ export const TEMPLATES: TemplateDefinition[] = [
     recommendedFor: ['marketing', 'media', 'arts', 'startups'],
     previewImage: '/images/templates/creative.png',
     version: 1
+  },
+  {
+    id: 'executive',
+    name: 'Executive',
+    description: 'Authoritative single-column layout with strong typography for senior leaders',
+    style: 'classic',
+    layout: 'single-column',
+    defaultColors: ['#0F172A', '#B45309', '#1E293B'],
+    recommendedFor: ['executive', 'management', 'finance', 'leadership'],
+    previewImage: '/images/templates/executive.png',
+    version: 1
+  },
+  {
+    id: 'elegant',
+    name: 'Elegant',
+    description: 'Refined serif typography with a sophisticated, timeless feel',
+    style: 'minimal',
+    layout: 'single-column',
+    defaultColors: ['#574B3B', '#927A5E', '#EAE4DA'],
+    recommendedFor: ['academia', 'legal', 'consulting', 'luxury'],
+    previewImage: '/images/templates/elegant.png',
+    version: 1
+  },
+  {
+    id: 'sidebar',
+    name: 'Sidebar',
+    description: 'Two-column layout with a colored sidebar highlighting personal info',
+    style: 'clean',
+    layout: 'two-column',
+    defaultColors: ['#0D9488', '#134E4A', '#99F6E4'],
+    recommendedFor: ['design', 'technology', 'product', 'creative'],
+    previewImage: '/images/templates/sidebar.png',
+    version: 1
+  },
+  {
+    id: 'pro',
+    name: 'Professional',
+    description: 'Balanced, trustworthy design suited for every industry',
+    style: 'classic',
+    layout: 'two-column',
+    defaultColors: ['#2563EB', '#0F172A', '#94A3B8'],
+    recommendedFor: ['general', 'corporate', 'engineering', 'healthcare'],
+    previewImage: '/images/templates/pro.png',
+    version: 1
+  },
+  {
+    id: 'bold',
+    name: 'Bold',
+    description: 'High-impact design with strong color blocks and confident accents',
+    style: 'creative',
+    layout: 'single-column',
+    defaultColors: ['#E11D48', '#881337', '#FCE7F3'],
+    recommendedFor: ['marketing', 'media', 'startups', 'advertising'],
+    previewImage: '/images/templates/bold.png',
+    version: 1
   }
 ]
 

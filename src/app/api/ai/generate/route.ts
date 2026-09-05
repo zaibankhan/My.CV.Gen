@@ -18,7 +18,10 @@ export async function POST(request: NextRequest) {
     jobDescription,
     tone,
     industries,
-    provider = 'openai',
+    provider = 'groq',
+    model,
+    referenceText,
+    referenceFileName,
     cvId
   } = body
 
@@ -47,7 +50,10 @@ export async function POST(request: NextRequest) {
       cvData,
       jobDescription,
       tone,
-      industries
+      industries,
+      model,
+      referenceText,
+      referenceFileName
     })
 
     // Log the AI generation

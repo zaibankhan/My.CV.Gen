@@ -20,6 +20,8 @@ export function useCVData() {
     content,
     jobDescription,
     activeProvider,
+    activeModel,
+    referenceFile,
     setContent,
     setIsGenerating,
     isGenerating
@@ -33,7 +35,10 @@ export function useCVData() {
         body: JSON.stringify({
           cvData: content,
           jobDescription: jobDescription || undefined,
-          provider: activeProvider
+          provider: activeProvider,
+          model: activeModel,
+          referenceText: referenceFile?.text || undefined,
+          referenceFileName: referenceFile?.fileName || undefined
         })
       })
 

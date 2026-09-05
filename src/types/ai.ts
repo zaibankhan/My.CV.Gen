@@ -1,4 +1,4 @@
-export type AIProvider = 'openai' | 'anthropic'
+export type AIProvider = 'openai' | 'anthropic' | 'groq'
 
 export interface GenerateOptions {
   cvData: any
@@ -6,6 +6,9 @@ export interface GenerateOptions {
   tone?: string
   industries?: string[]
   provider?: AIProvider
+  model?: string
+  referenceText?: string
+  referenceFileName?: string
 }
 
 export interface GenerateResult {

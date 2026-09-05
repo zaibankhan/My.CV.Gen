@@ -1,23 +1,26 @@
-// OpenAI integration
+// Groq integration (free tier, OpenAI-compatible API)
 import OpenAI from 'openai'
 import type { AIUsageMetadata } from '@/types/ai'
 
-export async function generateWithOpenAI(
+export async function generateWithGroq(
   prompt: string,
-  model = 'gpt-4o'
+  model = 'llama-3.3-70b-versatile'
 ): Promise<{ content: string; usage: AIUsageMetadata }> {
-  const apiKey = process.env.OPENAI_API_KEY
+  const apiKey = process.env.GROQ_API_KEY
 
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is not configured')
+    throw new Error('GROQ_API_KEY is not configured')
   }
 
-  const openai = new OpenAI({ apiKey })
+  const groq = new OpenAI({
+    apiKey,
+    baseURL: 'https://api.groq.com/openai/v1'
+  })
   const startTime = Date.now()
 
   try {
-    const response = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || model,
+    const response = await groq.chat.completions.create({
+      model: process.env.GROQ_MODEL || model,
       messages: [
         { role: 'system', content: 'You are an expert professional resume writer.' },
         { role: 'user', content: prompt }
@@ -38,6 +41,6 @@ export async function generateWithOpenAI(
       }
     }
   } catch (error: any) {
-    throw new Error(`OpenAI API error: ${error.message}`)
+    throw new Error(`Groq API error: ${error.message}`)
   }
 }

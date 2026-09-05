@@ -74,16 +74,28 @@ export function EducationForm() {
             }
           />
           <div className="grid grid-cols-2 gap-3">
-            <Input
-              placeholder="Start Date"
-              value={edu.startDate}
-              onChange={(e) => updateEducation(index, 'startDate', e.target.value)}
-            />
-            <Input
-              placeholder="End Date"
-              value={edu.endDate}
-              onChange={(e) => updateEducation(index, 'endDate', e.target.value)}
-            />
+            <div>
+              <label className="block text-[11px] font-medium text-gray-500 mb-1">
+                Start Date
+              </label>
+              <Input
+                type="date"
+                value={edu.startDate}
+                onChange={(e) => updateEducation(index, 'startDate', e.target.value)}
+                aria-label="Start date"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-medium text-gray-500 mb-1">
+                End Date
+              </label>
+              <Input
+                type="date"
+                value={edu.endDate}
+                onChange={(e) => updateEducation(index, 'endDate', e.target.value)}
+                aria-label="End date"
+              />
+            </div>
           </div>
           <Textarea
             placeholder="Description, achievements, GPA, etc."

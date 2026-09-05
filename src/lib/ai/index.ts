@@ -1,5 +1,6 @@
 import { generateWithOpenAI } from './openai'
 import { generateWithAnthropicClaude } from './anthropic'
+import { generateWithGroq } from './groq'
 import type { AIProvider, AIResponse, GenerateResult, AIUsageMetadata } from '@/types/ai'
 import {
   SYSTEM_PROMPT,
@@ -10,18 +11,25 @@ import {
   calculateATSScorePrompt
 } from './prompts'
 
+interface GenerateInput {
+  cvData: any
+  jobDescription?: string
+  tone?: string
+  industries?: string[]
+  model?: string
+  referenceText?: string
+  referenceFileName?: string
+}
+
 export class AIProviderFactory {
   static async generateCV(
     provider: AIProvider,
-    input: any
+    input: GenerateInput
   ): Promise<AIResponse<GenerateResult>> {
     const prompt = `${SYSTEM_PROMPT}\n\n${generateFullCVPrompt(input)}`
 
     try {
-      const result =
-        provider === 'openai'
-          ? await generateWithOpenAI(prompt)
-          : await generateWithAnthropicClaude(prompt)
+      const result = await runProvider(provider, prompt, input.model)
 
       const parsed = JSON.parse(result.content)
 
@@ -38,14 +46,12 @@ export class AIProviderFactory {
     provider: AIProvider,
     section: string,
     currentContent: any,
-    jobDescription?: string
+    jobDescription?: string,
+    model?: string
   ): Promise<AIResponse<any>> {
     const prompt = `${SYSTEM_PROMPT}\n\n${regenerateSectionPrompt(section, currentContent, jobDescription)}`
 
-    const result =
-      provider === 'openai'
-        ? await generateWithOpenAI(prompt)
-        : await generateWithAnthropicClaude(prompt)
+    const result = await runProvider(provider, prompt, model)
 
     return {
       data: JSON.parse(result.content),
@@ -56,14 +62,12 @@ export class AIProviderFactory {
   static async improveText(
     provider: AIProvider,
     text: string,
-    style: string
+    style: string,
+    model?: string
   ): Promise<AIResponse<{ text: string }>> {
     const prompt = improveTextPrompt(text, style)
 
-    const result =
-      provider === 'openai'
-        ? await generateWithOpenAI(prompt)
-        : await generateWithAnthropicClaude(prompt)
+    const result = await runProvider(provider, prompt, model)
 
     return {
       data: JSON.parse(result.content),
@@ -74,14 +78,12 @@ export class AIProviderFactory {
   static async suggestSkills(
     provider: AIProvider,
     jobDescription: string,
-    currentSkills: string[]
+    currentSkills: string[],
+    model?: string
   ): Promise<AIResponse<{ technical: string[]; soft: string[] }>> {
     const prompt = suggestSkillsPrompt(jobDescription, currentSkills)
 
-    const result =
-      provider === 'openai'
-        ? await generateWithOpenAI(prompt)
-        : await generateWithAnthropicClaude(prompt)
+    const result = await runProvider(provider, prompt, model)
 
     return {
       data: JSON.parse(result.content),
@@ -92,14 +94,12 @@ export class AIProviderFactory {
   static async analyzeATS(
     provider: AIProvider,
     content: any,
-    jobDescription: string
+    jobDescription: string,
+    model?: string
   ): Promise<AIResponse<any>> {
     const prompt = calculateATSScorePrompt(content, jobDescription)
 
-    const result =
-      provider === 'openai'
-        ? await generateWithOpenAI(prompt)
-        : await generateWithAnthropicClaude(prompt)
+    const result = await runProvider(provider, prompt, model)
 
     return {
       data: JSON.parse(result.content),
@@ -108,5 +108,18 @@ export class AIProviderFactory {
   }
 }
 
-export type { AIProvider, AIResponse, GenerateResult, AIUsageMetadata }
+async function runProvider(
+  provider: AIProvider,
+  prompt: string,
+  model?: string
+): Promise<{ content: string; usage: AIUsageMetadata }> {
+  if (provider === 'anthropic') {
+    return await generateWithAnthropicClaude(prompt, model)
+  }
+  if (provider === 'groq') {
+    return await generateWithGroq(prompt, model)
+  }
+  return await generateWithOpenAI(prompt, model)
+}
 
+export type { AIProvider, AIResponse, GenerateResult, AIUsageMetadata }

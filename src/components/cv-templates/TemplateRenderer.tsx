@@ -42,6 +42,40 @@ export function TemplateRenderer({
       fontFamily: fonts.headingFont,
       color: colors.primary,
       borderBottom: `3px solid ${colors.accent}`
+    },
+    executive: {
+      fontFamily: fonts.headingFont,
+      color: colors.accent,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.05em',
+      borderBottom: `2px solid ${colors.primary}`,
+      paddingBottom: '6px'
+    },
+    elegant: {
+      fontFamily: fonts.headingFont,
+      color: colors.primary,
+      fontWeight: 500,
+      fontStyle: 'italic' as const,
+      borderBottom: `1px solid ${colors.secondary}`
+    },
+    sidebar: {
+      fontFamily: fonts.headingFont,
+      color: colors.secondary,
+      fontWeight: 600,
+      borderLeft: `4px solid ${colors.primary}`,
+      paddingLeft: '8px'
+    },
+    pro: {
+      fontFamily: fonts.headingFont,
+      color: colors.primary,
+      fontWeight: 700
+    },
+    bold: {
+      fontFamily: fonts.headingFont,
+      color: colors.primary,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.08em',
+      borderBottom: `4px solid ${colors.accent}`
     }
   }
 
@@ -64,12 +98,18 @@ export function TemplateRenderer({
         style={{
           background: colors.primary,
           color: '#fff',
-          padding: '24px 32px'
+          padding: template === 'sidebar' ? '24px 28px' : '24px 32px'
         }}
         className="flex items-center justify-between"
       >
         <div>
-          <h1 style={{ fontFamily: fonts.headingFont }} className="text-3xl font-bold mb-1">
+          <h1
+            style={{
+              fontFamily: fonts.headingFont,
+              letterSpacing: template === 'executive' ? '0.02em' : undefined
+            }}
+            className="text-3xl font-bold mb-1"
+          >
             {personal.fullName || 'Your Name'}
           </h1>
           <p className="text-lg opacity-90">
@@ -96,7 +136,20 @@ export function TemplateRenderer({
       </div>
 
       {/* Body */}
-      <div style={{ padding: '24px 32px' }}>
+      <div
+        style={{
+          padding: template === 'sidebar' ? '0' : '24px 32px',
+          display: template === 'sidebar' ? 'flex' : undefined
+        }}
+      >
+        {template === 'sidebar' ? (
+          <SidebarLayout
+            content={content}
+            designConfig={designConfig}
+            sectionStyles={sectionStyles[template]}
+          />
+        ) : (
+          <>
         {showSections.summary && summary && (
           <Section style={sectionStyles[template]} title="Professional Summary">
             <p className="text-sm">{summary}</p>
@@ -236,7 +289,168 @@ export function TemplateRenderer({
             </div>
           </Section>
         )}
+        </>
+        )}
       </div>
+    </div>
+  )
+}
+
+function SidebarLayout({
+  content,
+  designConfig,
+  sectionStyles
+}: {
+  content: CvContent
+  designConfig: DesignConfig
+  sectionStyles: React.CSSProperties
+}) {
+  const { personal, summary, experience, education, skills, languages, certifications } = content
+  const colors = designConfig.colors || DEFAULT_DESIGN_CONFIG.colors
+  const showSections = designConfig.showSections
+
+  const contactItems = [
+    personal.email && { label: 'Email', value: personal.email },
+    personal.phone && { label: 'Phone', value: personal.phone },
+    personal.location && { label: 'Location', value: personal.location },
+    personal.website && { label: 'Website', value: personal.website },
+    personal.linkedin && { label: 'LinkedIn', value: personal.linkedin },
+    personal.github && { label: 'GitHub', value: personal.github }
+  ].filter(Boolean) as { label: string; value: string }[]
+
+  return (
+    <div className="flex w-full">
+      {/* Sidebar */}
+      <aside
+        style={{
+          background: colors.primary,
+          color: '#fff',
+          width: '70mm',
+          padding: '24px 20px',
+          flexShrink: 0
+        }}
+      >
+        <div className="text-[10px] uppercase tracking-wider opacity-80 mb-3">
+          Contact
+        </div>
+        <div className="space-y-3 mb-6">
+          {contactItems.map((item, i) => (
+            <div key={i} className="text-xs break-words">
+              <div className="font-semibold opacity-90">{item.label}</div>
+              <div className="opacity-80">{item.value}</div>
+            </div>
+          ))}
+        </div>
+
+        {showSections.skills && (
+          <>
+            <div className="text-[10px] uppercase tracking-wider opacity-80 mb-3">
+              Skills
+            </div>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {[...(skills.technical || []), ...(skills.soft || [])].map(
+                (skill, i) => (
+                  <span
+                    key={i}
+                    className="bg-white/20 px-2 py-0.5 rounded text-[11px]"
+                  >
+                    {skill}
+                  </span>
+                )
+              )}
+            </div>
+          </>
+        )}
+
+        {showSections.languages && languages?.length > 0 && (
+          <>
+            <div className="text-[10px] uppercase tracking-wider opacity-80 mb-3">
+              Languages
+            </div>
+            <div className="space-y-1 mb-6">
+              {languages.map((lang) => (
+                <div key={lang.id} className="text-xs">
+                  {lang.language}
+                  {lang.proficiency && (
+                    <span className="opacity-80"> - {lang.proficiency}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {showSections.certifications && certifications?.length > 0 && (
+          <>
+            <div className="text-[10px] uppercase tracking-wider opacity-80 mb-3">
+              Certifications
+            </div>
+            <div className="space-y-2">
+              {certifications.map((cert) => (
+                <div key={cert.id} className="text-xs">
+                  <div className="font-semibold">{cert.name}</div>
+                  <div className="opacity-80">{cert.issuer}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </aside>
+
+      {/* Main content */}
+      <main style={{ padding: '24px 24px' }} className="flex-1 min-w-0">
+        {showSections.summary && summary && (
+          <Section style={sectionStyles} title="Professional Summary">
+            <p className="text-sm">{summary}</p>
+          </Section>
+        )}
+
+        {showSections.experience && experience.length > 0 && (
+          <Section style={sectionStyles} title="Experience">
+            <div className="space-y-4">
+              {experience.map((exp, idx) => (
+                <div key={exp.id || idx}>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold text-base">{exp.jobTitle}</h3>
+                      <p className="text-sm text-gray-600">{exp.company}</p>
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      {exp.startDate} - {exp.endDate}
+                    </span>
+                  </div>
+                  <ul className="mt-2 list-disc list-inside space-y-1">
+                    {(exp.bullets || []).map((bullet, bulletIdx) => (
+                      <li key={bulletIdx} className="text-sm ml-2">
+                        {bullet}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {showSections.education && education.length > 0 && (
+          <Section style={sectionStyles} title="Education">
+            <div className="space-y-3">
+              {education.map((edu, idx) => (
+                <div key={edu.id || idx}>
+                  <h3 className="font-semibold text-base">{edu.degree}</h3>
+                  <p className="text-sm text-gray-600">{edu.institution}</p>
+                  <span className="text-sm text-gray-500">
+                    {edu.startDate} - {edu.endDate}
+                  </span>
+                  {edu.description && (
+                    <p className="text-sm mt-1">{edu.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
+      </main>
     </div>
   )
 }

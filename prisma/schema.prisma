@@ -27,6 +27,7 @@ enum CVStatus {
 enum AIProvider {
   openai
   anthropic
+  groq
 }
 
 enum SSOProvider {

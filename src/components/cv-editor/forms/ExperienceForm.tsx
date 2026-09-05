@@ -8,9 +8,21 @@ import { SectionHeader } from '@/components/cv-editor/SectionHeader'
 import { useCvEditorStore } from '@/store/cvEditor'
 import { useState } from 'react'
 
+const isPresent = (endDate: string) =>
+  endDate?.toLowerCase().trim() === 'present'
+
 export function ExperienceForm() {
   const { content, setContent } = useCvEditorStore()
   const [regenerating, setRegenerating] = useState<number>(-1)
+
+  const togglePresent = (index: number) => {
+    const experience = [...content.experience]
+    experience[index] = {
+      ...experience[index],
+      endDate: isPresent(experience[index].endDate) ? '' : 'Present'
+    }
+    setContent({ experience })
+  }
 
   const updateExperience = (index: number, field: string, value: any) => {
     const experience = [...content.experience]
@@ -95,16 +107,45 @@ export function ExperienceForm() {
             onChange={(e) => updateExperience(index, 'company', e.target.value)}
           />
           <div className="grid grid-cols-2 gap-3">
-            <Input
-              placeholder="Start Date"
-              value={exp.startDate}
-              onChange={(e) => updateExperience(index, 'startDate', e.target.value)}
-            />
-            <Input
-              placeholder="End Date"
-              value={exp.endDate}
-              onChange={(e) => updateExperience(index, 'endDate', e.target.value)}
-            />
+            <div>
+              <label className="block text-[11px] font-medium text-gray-500 mb-1">
+                Start Date
+              </label>
+              <Input
+                type="date"
+                value={exp.startDate}
+                onChange={(e) => updateExperience(index, 'startDate', e.target.value)}
+                aria-label="Start date"
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[11px] font-medium text-gray-500">
+                  End Date
+                </label>
+                <label className="flex items-center gap-1 text-[11px] text-gray-500 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isPresent(exp.endDate)}
+                    onChange={() => togglePresent(index)}
+                    className="accent-primary-600"
+                  />
+                  Present
+                </label>
+              </div>
+              {isPresent(exp.endDate) ? (
+                <div className="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-500">
+                  Present
+                </div>
+              ) : (
+                <Input
+                  type="date"
+                  value={exp.endDate}
+                  onChange={(e) => updateExperience(index, 'endDate', e.target.value)}
+                  aria-label="End date"
+                />
+              )}
+            </div>
           </div>
           <Input
             placeholder="Location"

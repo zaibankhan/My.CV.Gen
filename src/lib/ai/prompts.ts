@@ -18,6 +18,9 @@ Key principles:
 Always return valid JSON matching the exact schema requested.`;
 
 export function generateFullCVPrompt(userInput: any): string {
+  const hasReference =
+    userInput.referenceText && userInput.referenceText.trim().length > 0
+
   return `Create a professional CV based on the following information.
 
 USER INFORMATION:
@@ -27,6 +30,14 @@ ${userInput.jobDescription ? `TARGET JOB DESCRIPTION:
 ${userInput.jobDescription}
 
 Tailor the content specifically for this job description, incorporating relevant keywords.` : ''}
+
+${hasReference ? `USER'S REFERENCE MATERIAL (extracted from "${userInput.referenceFileName || 'uploaded document'}"):
+Use this as the authoritative source of the user's real experience, education, skills, and achievements.
+Fill in any missing details from the CV draft above using ONLY facts present in this reference material.
+Do not invent credentials that are not found here.
+REFERENCE MATERIAL:
+${userInput.referenceText}
+` : ''}
 
 TONE: ${userInput.tone || 'professional'}
 ${userInput.industries ? `TARGET INDUSTRIES: ${userInput.industries.join(', ')}` : ''}

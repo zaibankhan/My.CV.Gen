@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
   const {
     content,
     jobDescription,
-    provider = 'openai',
+    provider = 'groq',
+    model,
     cvId
   } = body
 
@@ -43,7 +44,8 @@ export async function POST(request: NextRequest) {
     const result = await AIProviderFactory.analyzeATS(
       provider,
       content,
-      jobDescription
+      jobDescription,
+      model
     )
 
     await logAIGeneration({
