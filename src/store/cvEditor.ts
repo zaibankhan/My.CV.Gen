@@ -36,8 +36,8 @@ export const useCvEditorStore = create<CvEditorState>((set) => ({
   content: { ...EMPTY_CV_CONTENT } as CvContent,
   designConfig: DEFAULT_DESIGN_CONFIG as DesignConfig,
   isGenerating: false,
-  activeProvider: 'groq',
-  activeModel: DEFAULT_MODEL.groq,
+  activeProvider: 'free',
+  activeModel: DEFAULT_MODEL.free,
   jobDescription: '',
   referenceFile: null,
   setContent: (content) =>

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
   const {
     content,
     jobDescription,
-    provider = 'groq',
+    provider = 'free',
     model,
     cvId
   } = body

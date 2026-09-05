@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   if (!user) return unauthorized()
 
   const body = await request.json().catch(() => ({}))
-  const { title = 'Untitled CV', templateId = 'modern', aiProvider = 'groq' } = body
+  const { title = 'Untitled CV', templateId = 'modern', aiProvider = 'free' } = body
 
   const cv = await prisma.cvDocument.create({
     data: {

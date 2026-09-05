@@ -67,7 +67,7 @@ export async function checkRateLimit({
 export async function logAIGeneration(input: {
   userId: string
   cvDocumentId?: string
-  provider: 'openai' | 'anthropic' | 'groq'
+  provider: 'openai' | 'anthropic' | 'groq' | 'free'
   model: string
   promptTokens: number
   completionTokens: number

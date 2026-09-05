@@ -1,4 +1,4 @@
-export type AIProvider = 'openai' | 'anthropic' | 'groq'
+export type AIProvider = 'openai' | 'anthropic' | 'groq' | 'free'
 
 export interface GenerateOptions {
   cvData: any

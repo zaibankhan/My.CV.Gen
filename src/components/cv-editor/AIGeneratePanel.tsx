@@ -18,6 +18,7 @@ import {
   modelsForProvider,
   type AIModelInfo
 } from '@/lib/constants/aiModels'
+import type { AIProvider } from '@/types/ai'
 
 export function AIGeneratePanel() {
   const {
@@ -43,7 +44,7 @@ export function AIGeneratePanel() {
   )
 
   const handleProviderChange = (value: string) => {
-    setActiveProvider(value as 'openai' | 'anthropic' | 'groq')
+    setActiveProvider(value as AIProvider)
   }
 
   const handleFile = async (file: File | null) => {
@@ -190,6 +191,7 @@ export function AIGeneratePanel() {
               onChange={(e) => handleProviderChange(e.target.value)}
               className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
             >
+              <option value="free">Free AI — No Key Needed</option>
               <option value="groq">Groq — Free AI (Llama)</option>
               <option value="openai">OpenAI (GPT-4)</option>
               <option value="anthropic">Anthropic (Claude)</option>
@@ -218,7 +220,7 @@ export function AIGeneratePanel() {
             </select>
             <p className="mt-1 text-[11px] text-gray-400">
               {selectedModel?.description ||
-                `Using ${activeProvider === 'openai' ? 'GPT-4' : activeProvider === 'anthropic' ? 'Claude' : 'Groq'} to write your CV.`}
+                `Using ${activeProvider === 'openai' ? 'GPT-4' : activeProvider === 'anthropic' ? 'Claude' : activeProvider === 'groq' ? 'Groq' : 'the free AI gateway'} to write your CV.`}
             </p>
           </div>
 

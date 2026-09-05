@@ -1,6 +1,7 @@
 import { generateWithOpenAI } from './openai'
 import { generateWithAnthropicClaude } from './anthropic'
 import { generateWithGroq } from './groq'
+import { generateWithFreeAI } from './free'
 import type { AIProvider, AIResponse, GenerateResult, AIUsageMetadata } from '@/types/ai'
 import {
   SYSTEM_PROMPT,
@@ -118,6 +119,9 @@ async function runProvider(
   }
   if (provider === 'groq') {
     return await generateWithGroq(prompt, model)
+  }
+  if (provider === 'free') {
+    return await generateWithFreeAI(prompt, model)
   }
   return await generateWithOpenAI(prompt, model)
 }

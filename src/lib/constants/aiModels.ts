@@ -71,13 +71,33 @@ export const AI_MODELS: AIModelInfo[] = [
     name: 'GPT-OSS 20B (FREE)',
     provider: 'groq',
     description: 'Open-source OpenAI model, completely free on Groq'
+  },
+  {
+    id: 'gpt-4o-mini',
+    name: 'GPT-4o mini (FREE — No Key)',
+    provider: 'free',
+    description: 'Free AI via OpenAPIs gateway — no API key or signup needed',
+    recommended: true
+  },
+  {
+    id: 'gpt-4o',
+    name: 'GPT-4o (FREE — No Key)',
+    provider: 'free',
+    description: 'Full GPT-4o through the free member gateway, no key required'
+  },
+  {
+    id: 'openai-fast',
+    name: 'GPT-OSS 20B (FREE — No Key)',
+    provider: 'free',
+    description: 'Free anonymous model via Pollinations, automatic fallback'
   }
 ]
 
 export const DEFAULT_MODEL: Record<AIProvider, string> = {
   openai: 'gpt-4o',
   anthropic: 'claude-3-5-sonnet-20241022',
-  groq: 'llama-3.3-70b-versatile'
+  groq: 'llama-3.3-70b-versatile',
+  free: 'gpt-4o-mini'
 }
 
 export function modelsForProvider(provider: AIProvider): AIModelInfo[] {

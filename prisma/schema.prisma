@@ -28,6 +28,7 @@ enum AIProvider {
   openai
   anthropic
   groq
+  free
 }
 
 enum SSOProvider {
