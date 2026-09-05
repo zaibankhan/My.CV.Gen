@@ -128,7 +128,17 @@ Return ONLY valid JSON in this EXACT format:
       "endDate": "string",
       "description": "string"
     }
-  ]
+  ],
+  "personal": {
+    "fullName": "full name as written or empty string",
+    "jobTitle": "current headline/role title from the document or empty string",
+    "email": "email address or empty string",
+    "phone": "phone number or empty string",
+    "location": "city/country or empty string",
+    "website": "personal website URL or empty string",
+    "linkedin": "LinkedIn URL or empty string",
+    "github": "GitHub URL or empty string"
+  }
 }`;
 }
 

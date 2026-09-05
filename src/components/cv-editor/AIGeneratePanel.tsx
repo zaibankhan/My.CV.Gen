@@ -100,7 +100,30 @@ export function AIGeneratePanel() {
       }
 
       const parsed = data.data
+      const importPersonal = (p: any) => {
+        const filled = Object.entries(p || {}).filter(
+          ([, v]) => typeof v === 'string' && v.trim().length > 0
+        )
+        if (filled.length === 0) return null
+        return Object.fromEntries(filled)
+      }
+      const personal = importPersonal(parsed.personal)
+
       const parts: string[] = []
+      if (personal) {
+        const pos = Math.min(
+          (personal.email ? 1 : 0) +
+            (personal.phone ? 1 : 0) +
+            (personal.location ? 1 : 0) +
+            (personal.linkedin ? 1 : 0) +
+            (personal.github ? 1 : 0) +
+            (personal.website ? 1 : 0),
+          3
+        )
+        parts.push(
+          `${personal.fullName ? `${personal.fullName}'s ` : ''}contact info (${pos} field${pos > 1 ? 's' : ''})`
+        )
+      }
       if (parsed.summary) parts.push('summary')
       if (parsed.experience?.length) {
         parts.push(`${parsed.experience.length} job${parsed.experience.length > 1 ? 's' : ''}`)
@@ -113,6 +136,9 @@ export function AIGeneratePanel() {
       if (skillCount) parts.push(`${skillCount} skills`)
 
       setContent({
+        personal: personal
+          ? { ...content.personal, ...personal }
+          : content.personal,
         summary: parsed.summary || content.summary,
         experience:
           parsed.experience?.length > 0
