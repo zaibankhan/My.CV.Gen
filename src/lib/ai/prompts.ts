@@ -37,6 +37,7 @@ This is the user's real CV. Treat it as the SINGLE SOURCE OF TRUTH for their fac
 - Rewrite each entry professionally: convert plain responsibilities into achievement-oriented, ATS-friendly bullet points using strong action verbs, and keep any numbers/percentages exactly as stated.
 - Do NOT invent employers, titles, dates, degrees, or skills that are not present in the reference.
 - Include EVERY experience entry and EVERY education entry from the reference. Never merge, drop, or skip any of them — each role keeps its own company, title, dates, location, and bullets.
+- Keep AT LEAST as many bullet points per experience entry as the original entry had.
 - If the reference lacks a target job or skills, keep only what is there rather than fabricating.
 REFERENCE MATERIAL:
 ${userInput.referenceText}
@@ -100,7 +101,7 @@ Only use information that is actually present in the document. Do not invent or 
 If a section is missing, return empty arrays or empty string for it.
 
 Document text:
-${text.slice(0, 14000)}
+${text.slice(0, 40000)}
 
 Return ONLY valid JSON in this EXACT format:
 {

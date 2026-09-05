@@ -53,25 +53,72 @@ export function useCVData() {
       setIsGenerating(true)
     },
     onSuccess: (data) => {
-      // Merge generated content into the current CV
+      // Merge generated content into the current CV. Never drop an entry
+      // that already existed in the editor, even if the AI omitted it.
       if (data.data) {
+        const genExp: any[] = data.data.experience || []
+        const genEdu: any[] = data.data.education || []
+        const curExp: any[] = content.experience || []
+        const curEdu: any[] = content.education || []
+
+        const expMatch = (a: any, b: any) =>
+          (a.company || '').toLowerCase() === (b.company || '').toLowerCase() &&
+          (a.jobTitle || '').toLowerCase() === (b.jobTitle || '').toLowerCase()
+
+        const eduMatch = (a: any, b: any) =>
+          (a.institution || '').toLowerCase() ===
+            (b.institution || '').toLowerCase() &&
+          (a.degree || '').toLowerCase() === (b.degree || '').toLowerCase()
+
+        const mergedExperience = [
+          ...genExp,
+          ...curExp.filter((orig) => !genExp.some((g) => expMatch(orig, g)))
+        ]
+
+        const mergedEducation = [
+          ...genEdu,
+          ...curEdu.filter((orig) => !genEdu.some((g) => eduMatch(orig, g)))
+        ]
+
+        const uniqueSkills = (lists: any[]) => {
+          const seen = new Set<string>()
+          const out: string[] = []
+          for (const s of lists.flat().filter(Boolean)) {
+            const k = String(s).trim().toLowerCase()
+            if (k && !seen.has(k)) {
+              seen.add(k)
+              out.push(String(s).trim())
+            }
+          }
+          return out
+        }
+
         setContent({
           summary: data.data.summary || content.summary,
-          experience:
-            data.data.experience?.length > 0
-              ? data.data.experience.map((exp: any) => ({
-                  id: `exp-${Date.now()}-${Math.random()}`,
-                  ...exp
-                }))
-              : content.experience,
-          skills: data.data.skills || content.skills,
-          education:
-            data.data.education?.length > 0
-              ? data.data.education.map((edu: any) => ({
-                  id: `edu-${Date.now()}-${Math.random()}`,
-                  ...edu
-                }))
-              : content.education
+          experience: mergedExperience.map((exp) => ({
+            id: exp.id || `exp-${Date.now()}-${Math.random()}`,
+            jobTitle: exp.jobTitle || '',
+            company: exp.company || '',
+            startDate: exp.startDate || '',
+            endDate: exp.endDate || '',
+            location: exp.location || '',
+            bullets: Array.isArray(exp.bullets) ? exp.bullets : []
+          })),
+          skills: {
+            technical: uniqueSkills([
+              data.data.skills?.technical,
+              content.skills?.technical
+            ]),
+            soft: uniqueSkills([data.data.skills?.soft, content.skills?.soft])
+          },
+          education: mergedEducation.map((edu) => ({
+            id: edu.id || `edu-${Date.now()}-${Math.random()}`,
+            degree: edu.degree || '',
+            institution: edu.institution || '',
+            startDate: edu.startDate || '',
+            endDate: edu.endDate || '',
+            description: edu.description || ''
+          }))
         })
       }
     },

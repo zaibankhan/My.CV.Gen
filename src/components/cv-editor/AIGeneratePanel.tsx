@@ -68,7 +68,7 @@ export function AIGeneratePanel() {
         throw new Error(data.error || 'Failed to read the file.')
       }
 
-      const text = data.text.slice(0, 12000)
+      const text = data.text.slice(0, 30000)
       setReferenceFile({
         fileName: data.fileName,
         text

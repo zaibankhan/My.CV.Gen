@@ -27,7 +27,7 @@ export async function generateWithGroq(
       ],
       response_format: { type: 'json_object' },
       temperature: 0.7,
-      max_tokens: 4000
+      max_tokens: 8192
     })
 
     return {
