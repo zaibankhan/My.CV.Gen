@@ -49,8 +49,9 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
       const w = rect.width
       const h = rect.height
       if (w <= 0 || h <= 0) return
-      // Fit page edges to the visible area (cover as much of the pane as possible)
-      setScale(Math.max(0.25, Math.min(w / PAGE_W, h / PAGE_H)))
+      // Reserve space for the pager toolbar, then fit the page to fill the rest
+      const availH = Math.max(200, h - 56)
+      setScale(Math.max(0.25, Math.min(w / PAGE_W, availH / PAGE_H)))
     }
 
     updateScale()
@@ -83,9 +84,9 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
 
       <div
         ref={containerRef}
-        className="w-full h-full flex flex-col items-center justify-center bg-gray-100 overflow-hidden"
+        className="w-full h-full flex flex-col items-center justify-start bg-gray-100 overflow-hidden py-2"
       >
-        <div className="sticky top-0 z-20 mb-3 bg-gray-100/80 backdrop-blur border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-3 shadow-sm">
+        <div className="sticky top-0 z-20 mb-2 bg-gray-100/80 backdrop-blur border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-3 shadow-sm">
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0}

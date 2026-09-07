@@ -21,12 +21,16 @@ interface CvEditorState {
   activeProvider: AIProvider
   activeModel: string
   jobDescription: string
+  aiTone: string
+  aiIndustries: string
   referenceFile: ReferenceFile | null
   setContent: (content: Partial<CvContent>) => void
   setDesignConfig: (config: Partial<DesignConfig>) => void
   setJobDescription: (desc: string) => void
   setActiveProvider: (provider: AIProvider) => void
   setActiveModel: (model: string) => void
+  setAiTone: (tone: string) => void
+  setAiIndustries: (industries: string) => void
   setReferenceFile: (referenceFile: ReferenceFile | null) => void
   setIsGenerating: (loading: boolean) => void
   reset: () => void
@@ -39,6 +43,8 @@ export const useCvEditorStore = create<CvEditorState>((set) => ({
   activeProvider: 'groq',
   activeModel: DEFAULT_MODEL.groq,
   jobDescription: '',
+  aiTone: 'professional',
+  aiIndustries: '',
   referenceFile: null,
   setContent: (content) =>
     set((state) => ({
@@ -52,6 +58,8 @@ export const useCvEditorStore = create<CvEditorState>((set) => ({
       }
     })),
   setJobDescription: (jobDescription) => set({ jobDescription }),
+  setAiTone: (aiTone) => set({ aiTone }),
+  setAiIndustries: (aiIndustries) => set({ aiIndustries }),
   setActiveProvider: (activeProvider) =>
     set((state) => ({
       activeProvider,

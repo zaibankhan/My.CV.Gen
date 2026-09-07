@@ -19,6 +19,8 @@ export function useCVData() {
   const {
     content,
     jobDescription,
+    aiTone,
+    aiIndustries,
     activeProvider,
     activeModel,
     referenceFile,
@@ -35,6 +37,13 @@ export function useCVData() {
         body: JSON.stringify({
           cvData: content,
           jobDescription: jobDescription || undefined,
+          tone: aiTone || 'professional',
+          industries: aiIndustries
+            ? aiIndustries
+                .split(/[,;]/)
+                .map((i) => i.trim())
+                .filter(Boolean)
+            : undefined,
           provider: activeProvider,
           model: activeModel,
           referenceText: referenceFile?.text || undefined,

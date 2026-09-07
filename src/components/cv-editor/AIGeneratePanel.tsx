@@ -29,6 +29,10 @@ export function AIGeneratePanel() {
     setDesignConfig,
     jobDescription,
     setJobDescription,
+    aiTone,
+    setAiTone,
+    aiIndustries,
+    setAiIndustries,
     activeModel,
     setActiveModel,
     referenceFile,
@@ -42,6 +46,16 @@ export function AIGeneratePanel() {
   const [uploadError, setUploadError] = useState('')
   const [importNotice, setImportNotice] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const CV_STYLES: { id: string; label: string }[] = [
+    { id: 'professional', label: 'Professional' },
+    { id: 'concise', label: 'Concise' },
+    { id: 'detailed', label: 'Detailed' },
+    { id: 'enthusiastic', label: 'Enthusiastic' },
+    { id: 'formal', label: 'Formal' }
+  ]
+  const toneLabel =
+    CV_STYLES.find((s) => s.id === aiTone)?.label || 'Professional'
 
   const availableModels = modelsForProvider('groq')
   const selectedModel: AIModelInfo | undefined = availableModels.find(
@@ -295,6 +309,53 @@ export function AIGeneratePanel() {
             )}
           </div>
 
+          {/* CV Style */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              CV Style
+            </label>
+            <select
+              value={aiTone}
+              onChange={(e) => setAiTone(e.target.value)}
+              className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+            >
+              {CV_STYLES.map((style) => (
+                <option key={style.id} value={style.id}>
+                  {style.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-gray-400">
+              {aiTone === 'professional' &&
+                'Balanced, achievement-driven writing for recruiters.'}
+              {aiTone === 'concise' &&
+                'Short, sharp lines — great for high-volume applications.'}
+              {aiTone === 'detailed' &&
+                'In-depth detail with more context per role.'}
+              {aiTone === 'enthusiastic' &&
+                'Energetic and confident while staying professional.'}
+              {aiTone === 'formal' &&
+                'Traditional, serious and highly professional tone.'}
+            </p>
+          </div>
+
+          {/* Target industry */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Target Industry (optional)
+            </label>
+            <input
+              type="text"
+              value={aiIndustries}
+              onChange={(e) => setAiIndustries(e.target.value)}
+              placeholder="e.g. Finance, SaaS, Healthcare"
+              className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+            />
+            <p className="mt-1 text-[11px] text-gray-400">
+              The AI uses industry language and keywords that match.
+            </p>
+          </div>
+
           {/* Model */}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">
@@ -360,12 +421,12 @@ export function AIGeneratePanel() {
             {isGenerating ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Writing your professional CV...
+                Writing your {toneLabel.toLowerCase()} CV...
               </>
             ) : (
               <>
                 <Wand2 className="w-4 h-4" />
-                Write Professional CV
+                Write {toneLabel} CV
               </>
             )}
           </Button>
