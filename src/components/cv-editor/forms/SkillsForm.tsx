@@ -2,7 +2,7 @@
 
 import { X, Plus, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { SectionHeader } from '@/components/cv-editor/SectionHeader'
+import { SectionCard } from '@/components/cv-editor/SectionCard'
 import { useCvEditorStore } from '@/store/cvEditor'
 import { useState } from 'react'
 
@@ -33,25 +33,26 @@ export function SkillsForm() {
   }
 
   return (
-    <div className="space-y-4">
-      <SectionHeader title="Skills" />
-      <SkillCategory
-        title="Technical Skills"
-        skillType="technical"
-        skills={content.skills.technical}
-        onUpdate={updateSkill}
-        onAdd={addSkill}
-        onRemove={removeSkill}
-      />
-      <SkillCategory
-        title="Soft Skills"
-        skillType="soft"
-        skills={content.skills.soft}
-        onUpdate={updateSkill}
-        onAdd={addSkill}
-        onRemove={removeSkill}
-      />
-    </div>
+    <SectionCard title="Skills" hint="Edit or remove any imported skill">
+      <div className="space-y-4">
+        <SkillCategory
+          title="Technical Skills"
+          skillType="technical"
+          skills={content.skills.technical}
+          onUpdate={updateSkill}
+          onAdd={addSkill}
+          onRemove={removeSkill}
+        />
+        <SkillCategory
+          title="Soft Skills"
+          skillType="soft"
+          skills={content.skills.soft}
+          onUpdate={updateSkill}
+          onAdd={addSkill}
+          onRemove={removeSkill}
+        />
+      </div>
+    </SectionCard>
   )
 }
 

@@ -4,7 +4,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
-import { SectionHeader } from '@/components/cv-editor/SectionHeader'
+import { SectionCard } from '@/components/cv-editor/SectionCard'
 import { useCvEditorStore } from '@/store/cvEditor'
 
 export function EducationForm() {
@@ -39,16 +39,25 @@ export function EducationForm() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <SectionHeader title="Education" />
+    <SectionCard
+      title="Education"
+      hint="Edit degrees, institutions and dates"
+      action={
         <Button variant="ghost" size="sm" onClick={addEducation}>
           <Plus className="w-4 h-4" />
           Add
         </Button>
-      </div>
+      }
+      defaultOpen={content.education.length > 0}
+    >
+      <div className="space-y-4">
+        {content.education.length === 0 && (
+          <p className="text-xs text-gray-400">
+            No education added yet. Click Add to create an entry.
+          </p>
+        )}
 
-      {content.education.map((edu, index) => (
+        {content.education.map((edu, index) => (
         <div key={edu.id} className="space-y-3 p-3 bg-gray-50 rounded-lg">
           <div className="flex justify-between items-center">
             <h4 className="text-sm font-medium">Education {index + 1}</h4>
@@ -106,7 +115,8 @@ export function EducationForm() {
             className="min-h-[60px]"
           />
         </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </SectionCard>
   )
 }

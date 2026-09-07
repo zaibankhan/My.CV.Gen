@@ -138,7 +138,14 @@ export function CVEditor({ cvId }: { cvId: string }) {
             onChange={setActiveTab}
           />
           {activeTab === 'content' ? (
-            <div className="p-4 space-y-6 flex-1 overflow-y-auto">
+            <div className="p-4 space-y-3 flex-1 overflow-y-auto">
+              <p className="text-[11px] text-gray-600 bg-primary-50 border border-primary-100 rounded-lg px-3 py-2">
+                <span className="font-semibold text-primary-800">
+                  Everything here is editable.
+                </span>{' '}
+                Change your name, title, location or any imported detail — the
+                preview updates instantly.
+              </p>
               <PersonalForm />
               <SummaryForm />
               <ExperienceForm />
