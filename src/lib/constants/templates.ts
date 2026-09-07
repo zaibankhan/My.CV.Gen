@@ -258,3 +258,51 @@ export const EMPTY_CV_CONTENT = {
   publications: [],
   courses: []
 }
+
+// Color + typography scheme each template applies when selected, so every
+// template gets its own distinct look (not just a font change).
+const TEMPLATE_FONTS: Record<string, [string, string]> = {
+  modern: ['Inter', 'Inter'],
+  classic: ['Georgia', 'Georgia'],
+  minimal: ['Lato', 'Lato'],
+  creative: ['Poppins', 'Roboto'],
+  executive: ['Oswald', 'Inter'],
+  elegant: ['Playfair Display', 'Merriweather'],
+  sidebar: ['Inter', 'Inter'],
+  pro: ['Montserrat', 'Open Sans'],
+  bold: ['Oswald', 'Inter']
+}
+
+export function getTemplateDesign(templateId: string): {
+  colors: {
+    primary: string
+    secondary: string
+    accent: string
+    background: string
+    text: string
+  }
+  typography: {
+    headingFont: string
+    bodyFont: string
+    fontSize: string
+    lineHeight: string
+  }
+} {
+  const t = TEMPLATES.find((t) => t.id === templateId) || TEMPLATES[0]
+  const [headingFont, bodyFont] = TEMPLATE_FONTS[t.id] || ['Inter', 'Inter']
+  return {
+    colors: {
+      primary: t.defaultColors[0],
+      secondary: t.defaultColors[1],
+      accent: t.defaultColors[2],
+      background: '#FFFFFF',
+      text: '#1F2937'
+    },
+    typography: {
+      headingFont,
+      bodyFont,
+      fontSize: '14px',
+      lineHeight: '1.6'
+    }
+  }
+}

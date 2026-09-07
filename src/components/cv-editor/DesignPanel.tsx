@@ -1,6 +1,11 @@
 'use client'
 
-import { COLOR_PALETTES, FONT_OPTIONS, TEMPLATES } from '@/lib/constants/templates'
+import {
+  COLOR_PALETTES,
+  FONT_OPTIONS,
+  TEMPLATES,
+  getTemplateDesign
+} from '@/lib/constants/templates'
 import { useCvEditorStore } from '@/store/cvEditor'
 import { cn } from '@/lib/utils'
 
@@ -8,7 +13,8 @@ export function DesignPanel() {
   const { designConfig, setDesignConfig } = useCvEditorStore()
 
   const setTemplate = (template: string) => {
-    setDesignConfig({ template })
+    const design = getTemplateDesign(template)
+    setDesignConfig({ template, ...design })
   }
 
   const setColor = (key: 'primary' | 'secondary' | 'accent', color: string) => {

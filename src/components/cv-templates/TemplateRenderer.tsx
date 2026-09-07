@@ -1,7 +1,7 @@
 'use client'
 
 import { DEFAULT_DESIGN_CONFIG } from '@/lib/constants/templates'
-import type { CvContent, DesignConfig } from '@/types/cv'
+import type { CvContent, DesignConfig, PersonalInfo } from '@/types/cv'
 
 interface TemplateRendererProps {
   content: CvContent
@@ -93,89 +93,12 @@ export function TemplateRenderer({
 
   return (
     <div style={styles.container} className="bg-white">
-      {/* Header */}
-      <div
-        style={{
-          background: colors.primary,
-          color: '#fff',
-          padding: template === 'sidebar' ? '24px 28px' : '24px 32px'
-        }}
-        className="flex items-center justify-between"
-      >
-        <div className="min-w-0">
-          <h1
-            style={{
-              fontFamily: fonts.headingFont,
-              letterSpacing: template === 'executive' ? '0.02em' : undefined
-            }}
-            className="text-3xl font-bold mb-1"
-          >
-            {personal.fullName || 'Your Name'}
-          </h1>
-          <p className="text-lg opacity-90">
-            {personal.jobTitle || 'Professional Title'}
-          </p>
-        </div>
-        {personal.photo && (
-          <img
-            src={personal.photo}
-            alt="Profile"
-            className="w-20 h-20 rounded-full object-cover border-2 border-white shadow shrink-0"
-          />
-        )}
-      </div>
-
-      {/* Contact bar */}
-      <div
-        style={{
-          background: colors.secondary,
-          color: '#fff',
-          padding: '8px 32px'
-        }}
-        className="flex flex-wrap items-center gap-4 text-sm"
-      >
-        {personal.email && (
-          <a
-            href={`mailto:${personal.email}`}
-            className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity"
-          >
-            ✉️ <span>{personal.email}</span>
-          </a>
-        )}
-        {personal.phone && (
-          <a
-            href={`tel:${personal.phone.replace(/[^\d+]/g, '')}`}
-            className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity"
-          >
-            📞 <span>{personal.phone}</span>
-          </a>
-        )}
-        {personal.location && (
-          <span className="flex items-center gap-1.5 opacity-90">
-            📍 <span>{personal.location}</span>
-          </span>
-        )}
-        {personal.website && (
-          <a
-            href={personal.website}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity"
-          >
-            🌐 <span>{personal.website}</span>
-          </a>
-        )}
-        {personal.linkedin && (
-          <span className="flex items-center gap-1.5 opacity-90">
-            💼 <span>linkedin.com/in/{personal.linkedin}</span>
-          </span>
-        )}
-        {personal.github && (
-          <span className="flex items-center gap-1.5 opacity-90">
-            🐙 <span>github.com/{personal.github}</span>
-          </span>
-        )}
-      </div>
+      <HeaderBlock
+        template={template}
+        personal={personal}
+        colors={colors}
+        fonts={fonts}
+      />
 
       {/* Body */}
       <div
@@ -598,5 +521,354 @@ function Section({
       </h2>
       {children}
     </section>
+  )
+}
+
+function HeaderBlock({
+  template,
+  personal,
+  colors,
+  fonts
+}: {
+  template: string
+  personal: PersonalInfo
+  colors: any
+  fonts: any
+}) {
+  const photo = personal.photo ? (
+    <img
+      src={personal.photo}
+      alt="Profile"
+      className="w-20 h-20 rounded-full object-cover border-2 border-white shadow shrink-0"
+    />
+  ) : null
+
+  const name = (
+    cls: string,
+    extra?: React.CSSProperties
+  ) => (
+    <h1
+      style={{ fontFamily: fonts.headingFont, ...extra }}
+      className={`mb-1 ${cls}`}
+    >
+      {personal.fullName || 'Your Name'}
+    </h1>
+  )
+
+  const title = (cls: string, extra?: React.CSSProperties) => (
+    <p style={{ fontFamily: fonts.headingFont, ...extra }} className={cls}>
+      {personal.jobTitle || 'Professional Title'}
+    </p>
+  )
+
+  const inlineContact = (
+    <ContactLinks personal={personal} variant="inline" />
+  )
+  const bandContact = (
+    <ContactLinks personal={personal} variant="band" />
+  )
+
+  switch (template) {
+    case 'classic':
+      return (
+        <div
+          className="text-center"
+          style={{
+            padding: '30px 32px 22px',
+            background: colors.background,
+            borderTop: `3px solid ${colors.secondary}`,
+            borderBottom: `1px solid ${colors.accent}`
+          }}
+        >
+          {name('text-3xl font-bold', { color: colors.text })}
+          {title('text-base uppercase tracking-widest mt-1 mb-3', {
+            color: colors.secondary
+          })}
+          <div
+            className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[13px]"
+            style={{ color: colors.text }}
+          >
+            {inlineContact}
+          </div>
+        </div>
+      )
+
+    case 'minimal':
+      return (
+        <div
+          style={{
+            padding: '28px 32px 20px',
+            background: colors.background
+          }}
+        >
+          {name('text-4xl font-extrabold', {
+            color: colors.text,
+            letterSpacing: '-0.02em'
+          })}
+          <div
+            className="w-14 h-[3px] rounded-full my-3"
+            style={{ background: colors.accent }}
+          />
+          {title('text-base', { color: colors.secondary })}
+          <div
+            className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] mt-3"
+            style={{ color: colors.text }}
+          >
+            {inlineContact}
+          </div>
+        </div>
+      )
+
+    case 'elegant':
+      return (
+        <div
+          className="text-center"
+          style={{
+            padding: '30px 32px 22px',
+            background: colors.background
+          }}
+        >
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="h-px w-20" style={{ background: colors.primary }} />
+            <div
+              className="w-2 h-2 rotate-45 border"
+              style={{ borderColor: colors.accent }}
+            />
+            <div className="h-px w-20" style={{ background: colors.primary }} />
+          </div>
+          {name('text-3xl font-semibold', {
+            color: colors.text,
+            fontStyle: 'italic'
+          })}
+          {title('text-base italic mt-1 mb-3', { color: colors.secondary })}
+          <div
+            className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[13px]"
+            style={{ color: colors.text }}
+          >
+            {inlineContact}
+          </div>
+        </div>
+      )
+
+    case 'creative':
+      return (
+        <>
+          <div className="h-[6px]" style={{ background: colors.accent }} />
+          <div
+            style={{
+              background: colors.primary,
+              color: '#fff',
+              padding: '24px 32px'
+            }}
+            className="flex items-center justify-between gap-4"
+          >
+            <div className="min-w-0">
+              {name('text-3xl font-extrabold uppercase tracking-wide')}
+              {title('text-lg opacity-90')}
+            </div>
+            {photo}
+          </div>
+          {bandContactBar(colors.secondary, bandContact)}
+        </>
+      )
+
+    case 'executive':
+      return (
+        <>
+          <div
+            style={{
+              background: colors.secondary,
+              color: '#fff',
+              padding: '28px 32px 26px'
+            }}
+            className="text-center relative"
+          >
+            <div
+              className="absolute bottom-0 left-0 right-0 h-[3px]"
+              style={{ background: colors.accent }}
+            />
+            {name('text-3xl font-bold uppercase', { letterSpacing: '0.05em' })}
+            {title('text-base uppercase tracking-widest mt-1 opacity-80')}
+          </div>
+          {bandContactBar(colors.primary, bandContact)}
+        </>
+      )
+
+    case 'bold':
+      return (
+        <>
+          <div
+            style={{
+              background: colors.secondary,
+              color: '#fff',
+              padding: '26px 32px'
+            }}
+            className="relative overflow-hidden"
+          >
+            <div
+              className="absolute left-0 top-0 bottom-0 w-1.5"
+              style={{ background: colors.accent }}
+            />
+            <div className="pl-3 flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                {name('text-4xl font-black uppercase', {
+                  letterSpacing: '0.02em'
+                })}
+                {title('text-lg font-medium mt-1 opacity-90')}
+              </div>
+              {photo}
+            </div>
+            <div
+              className="absolute bottom-0 left-0 right-0 h-[5px]"
+              style={{ background: colors.accent }}
+            />
+          </div>
+          {bandContactBar(colors.primary, bandContact)}
+        </>
+      )
+
+    case 'pro':
+      return (
+        <>
+          <div
+            style={{
+              background: colors.primary,
+              color: '#fff',
+              padding: '26px 32px'
+            }}
+            className="flex items-center justify-between gap-4"
+          >
+            <div className="min-w-0">
+              <h1
+                style={{ fontFamily: fonts.headingFont }}
+                className="text-3xl font-bold leading-tight"
+              >
+                {personal.fullName || 'Your Name'}
+              </h1>
+              <div
+                className="h-[3px] w-24 rounded-full mt-2"
+                style={{ background: colors.accent }}
+              />
+              <p className="text-base opacity-90 mt-2">
+                {personal.jobTitle || 'Professional Title'}
+              </p>
+            </div>
+            {photo}
+          </div>
+          {bandContactBar(colors.secondary, bandContact)}
+        </>
+      )
+
+    case 'sidebar':
+      return (
+        <div
+          style={{
+            background: colors.primary,
+            color: '#fff',
+            padding: '24px 28px'
+          }}
+          className="flex items-center justify-between gap-4"
+        >
+          <div className="min-w-0">
+            {name('text-2xl font-bold')}
+            {title('text-base opacity-90')}
+          </div>
+          {personal.photo && (
+            <img
+              src={personal.photo}
+              alt="Profile"
+              className="w-16 h-16 rounded-full object-cover border-2 border-white/80 shrink-0"
+            />
+          )}
+        </div>
+      )
+
+    case 'modern':
+    default:
+      return (
+        <>
+          <div
+            style={{
+              background: colors.primary,
+              color: '#fff',
+              padding: '24px 32px'
+            }}
+            className="flex items-center justify-between gap-4"
+          >
+            <div className="min-w-0">
+              {name('text-3xl font-bold')}
+              {title('text-lg opacity-90')}
+            </div>
+            {photo}
+          </div>
+          {bandContactBar(colors.secondary, bandContact)}
+        </>
+      )
+  }
+}
+
+function bandContactBar(background: string, children: React.ReactNode) {
+  return (
+    <div
+      style={{
+        background,
+        color: '#fff',
+        padding: '8px 32px'
+      }}
+      className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"
+    >
+      {children}
+    </div>
+  )
+}
+
+function ContactLinks({
+  personal,
+  variant
+}: {
+  personal: PersonalInfo
+  variant: 'band' | 'inline'
+}) {
+  const cls =
+    variant === 'band'
+      ? 'flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity'
+      : 'flex items-center gap-1.5 opacity-75 hover:opacity-100 transition-opacity'
+
+  return (
+    <>
+      {personal.email && (
+        <a href={`mailto:${personal.email}`} className={cls}>
+          ✉️ <span>{personal.email}</span>
+        </a>
+      )}
+      {personal.phone && (
+        <a
+          href={`tel:${personal.phone.replace(/[^\d+]/g, '')}`}
+          className={cls}
+        >
+          📞 <span>{personal.phone}</span>
+        </a>
+      )}
+      {personal.location && (
+        <span className={cls}>
+          📍 <span>{personal.location}</span>
+        </span>
+      )}
+      {personal.website && (
+        <a href={personal.website} target="_blank" rel="noreferrer" className={cls}>
+          🌐 <span>{personal.website}</span>
+        </a>
+      )}
+      {personal.linkedin && (
+        <span className={cls}>
+          💼 <span>linkedin.com/in/{personal.linkedin}</span>
+        </span>
+      )}
+      {personal.github && (
+        <span className={cls}>
+          🐙 <span>github.com/{personal.github}</span>
+        </span>
+      )}
+    </>
   )
 }

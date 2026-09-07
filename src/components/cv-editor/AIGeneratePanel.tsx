@@ -18,7 +18,7 @@ import {
   modelsForProvider,
   type AIModelInfo
 } from '@/lib/constants/aiModels'
-import { TEMPLATES } from '@/lib/constants/templates'
+import { TEMPLATES, getTemplateDesign } from '@/lib/constants/templates'
 import { cn } from '@/lib/utils'
 
 export function AIGeneratePanel() {
@@ -388,7 +388,10 @@ export function AIGeneratePanel() {
               {TEMPLATES.map((t) => (
                 <button
                   key={t.id}
-                  onClick={() => setDesignConfig({ template: t.id })}
+                  onClick={() => {
+                    const design = getTemplateDesign(t.id)
+                    setDesignConfig({ template: t.id, ...design })
+                  }}
                   className={cn(
                     'p-2 border-2 rounded-lg text-left transition-all',
                     designConfig.template === t.id
