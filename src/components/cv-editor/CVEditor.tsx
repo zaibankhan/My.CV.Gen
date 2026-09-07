@@ -166,7 +166,7 @@ export function CVEditor({ cvId }: { cvId: string }) {
         </div>
 
         {/* Right: Live preview */}
-        <div className="flex-1 bg-gray-100 overflow-y-auto p-8">
+        <div className="flex-1 min-w-0 bg-gray-100 overflow-hidden">
           <CVPreview content={content} designConfig={designConfig} />
         </div>
       </div>

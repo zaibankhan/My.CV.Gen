@@ -8,7 +8,8 @@ import type { CvContent, DesignConfig } from '@/types/cv'
 const MM_PER_PX = 96 / 25.4
 const PAGE_WIDTH_MM = 210
 const PAGE_HEIGHT_MM = 297
-const PAGE_HEIGHT_PX = PAGE_HEIGHT_MM * MM_PER_PX
+const PAGE_W = PAGE_WIDTH_MM * MM_PER_PX
+const PAGE_H = PAGE_HEIGHT_MM * MM_PER_PX
 
 interface CVPreviewProps {
   content: CvContent
@@ -16,9 +17,11 @@ interface CVPreviewProps {
 }
 
 export function CVPreview({ content, designConfig }: CVPreviewProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
   const measureRef = useRef<HTMLDivElement>(null)
   const [pages, setPages] = useState(1)
   const [page, setPage] = useState(0)
+  const [scale, setScale] = useState(0.5)
 
   useEffect(() => {
     const el = measureRef.current
@@ -36,6 +39,29 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
     ro.observe(el)
     return () => ro.disconnect()
   }, [content, designConfig])
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const updateScale = () => {
+      const rect = el.getBoundingClientRect()
+      const w = rect.width
+      const h = rect.height
+      if (w <= 0 || h <= 0) return
+      // Fit page edges to the visible area (cover as much of the pane as possible)
+      setScale(Math.max(0.25, Math.min(w / PAGE_W, h / PAGE_H)))
+    }
+
+    updateScale()
+    const ro = new ResizeObserver(updateScale)
+    ro.observe(el)
+    window.addEventListener('resize', updateScale)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', updateScale)
+    }
+  }, [])
 
   return (
     <>
@@ -55,8 +81,11 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
         <TemplateRenderer content={content} designConfig={designConfig} />
       </div>
 
-      <div className="flex flex-col items-center min-h-full">
-        <div className="sticky top-0 z-20 mb-4 bg-gray-100/80 backdrop-blur border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-3 shadow-sm">
+      <div
+        ref={containerRef}
+        className="w-full h-full flex flex-col items-center justify-center bg-gray-100 overflow-hidden"
+      >
+        <div className="sticky top-0 z-20 mb-3 bg-gray-100/80 backdrop-blur border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-3 shadow-sm">
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0}
@@ -65,7 +94,7 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
           >
             <ChevronLeft className="w-4 h-4 text-gray-700" />
           </button>
-          <span className="text-xs font-medium text-gray-600 flex items-center gap-1.5">
+          <span className="text-xs font-medium text-gray-600 flex items-center gap-1.5 whitespace-nowrap">
             <LayoutGrid className="w-3.5 h-3.5 text-gray-400" />
             Page {page + 1} of {pages}
           </span>
@@ -80,21 +109,32 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
         </div>
 
         <div
-          className="relative bg-white shadow-lg overflow-hidden"
+          className="relative bg-white shadow-lg"
           style={{
-            width: `${PAGE_WIDTH_MM}mm`,
-            height: `${PAGE_HEIGHT_MM}mm`
+            width: PAGE_W * scale,
+            height: PAGE_H * scale,
+            overflow: 'hidden'
           }}
         >
           <div
-            className="will-change-transform"
             style={{
-              transform: `translateY(-${page * PAGE_HEIGHT_MM}mm)`,
-              width: `${PAGE_WIDTH_MM}mm`,
-              minHeight: `${PAGE_HEIGHT_MM}mm`
+              transform: `scale(${scale})`,
+              transformOrigin: 'top left',
+              width: PAGE_W,
+              height: PAGE_H,
+              overflow: 'hidden'
             }}
           >
-            <TemplateRenderer content={content} designConfig={designConfig} />
+            <div
+              className="will-change-transform"
+              style={{
+                transform: `translateY(-${page * PAGE_H}px)`,
+                width: PAGE_W,
+                minHeight: PAGE_H
+              }}
+            >
+              <TemplateRenderer content={content} designConfig={designConfig} />
+            </div>
           </div>
         </div>
       </div>
