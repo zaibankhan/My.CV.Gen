@@ -290,7 +290,19 @@ export function TemplateRenderer({
             <div className="space-y-3">
               {content.projects.map((project) => (
                 <div key={project.id}>
-                  <h3 className="font-semibold text-base">{project.name}</h3>
+                  <h3 className="font-semibold text-base flex items-center flex-wrap gap-x-2">
+                    {project.name}
+                    {project.link && (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-normal text-primary-700 underline underline-offset-2 break-all"
+                      >
+                        🔗 {project.link.replace(/^https?:\/\//, '').slice(0, 40)}
+                      </a>
+                    )}
+                  </h3>
                   <p className="text-sm">{project.description}</p>
                   {project.technologies.length > 0 && (
                     <p className="text-xs text-gray-500 mt-1">
@@ -526,6 +538,36 @@ function SidebarLayout({
                   </span>
                   {edu.description && (
                     <p className="text-sm mt-1">{edu.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {showSections.projects && content.projects?.length > 0 && (
+          <Section style={sectionStyles} title="Projects">
+            <div className="space-y-3">
+              {content.projects.map((project) => (
+                <div key={project.id}>
+                  <h3 className="font-semibold text-base flex items-center flex-wrap gap-x-2">
+                    {project.name}
+                    {project.link && (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-normal text-primary-700 underline underline-offset-2 break-all"
+                      >
+                        🔗 {project.link.replace(/^https?:\/\//, '').slice(0, 40)}
+                      </a>
+                    )}
+                  </h3>
+                  <p className="text-sm">{project.description}</p>
+                  {project.technologies.length > 0 && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {project.technologies.join(', ')}
+                    </p>
                   )}
                 </div>
               ))}

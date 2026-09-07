@@ -10,6 +10,7 @@ import { SummaryForm } from '@/components/cv-editor/forms/SummaryForm'
 import { ExperienceForm } from '@/components/cv-editor/forms/ExperienceForm'
 import { EducationForm } from '@/components/cv-editor/forms/EducationForm'
 import { SkillsForm } from '@/components/cv-editor/forms/SkillsForm'
+import { ProjectsForm } from '@/components/cv-editor/forms/ProjectsForm'
 import { AIGeneratePanel } from '@/components/cv-editor/AIGeneratePanel'
 import { DesignPanel } from '@/components/cv-editor/DesignPanel'
 import { useCvEditorStore } from '@/store/cvEditor'
@@ -152,6 +153,7 @@ export function CVEditor({ cvId }: { cvId: string }) {
                 <ExperienceForm />
                 <EducationForm />
                 <SkillsForm />
+                <ProjectsForm />
               </div>
             </div>
           ) : (

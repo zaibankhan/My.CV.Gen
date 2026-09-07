@@ -131,6 +131,13 @@ export function CVPDFDocument({ content, designConfig }: CVPDFDocumentProps) {
       color: colors.accent,
       marginBottom: 3
     },
+    projectLink: {
+      fontSize: 8,
+      color: colors.primary,
+      marginTop: 2,
+      marginBottom: 2,
+      textDecoration: 'underline'
+    },
     itemDate: {
       fontSize: 9,
       color: colors.secondary
@@ -309,6 +316,9 @@ export function CVPDFDocument({ content, designConfig }: CVPDFDocumentProps) {
             {projects.map((project, idx) => (
               <View key={project.id || idx} style={styles.item}>
                 <Text style={styles.itemTitle}>{project.name}</Text>
+                {project.link && (
+                  <Text style={styles.projectLink}>{project.link}</Text>
+                )}
                 <Text style={{ lineHeight: 1.4 }}>{project.description}</Text>
                 {project.technologies?.length > 0 && (
                   <Text style={{ fontSize: 9, marginTop: 2 }}>
