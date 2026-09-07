@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import { useCVData } from '@/hooks/useCVData'
 import { usePDFExport } from '@/hooks/usePDFExport'
-import { TemplateRenderer } from '@/components/cv-templates/TemplateRenderer'
+import { CVPreview } from '@/components/cv-editor/CVPreview'
 import { Tabs } from '@/components/ui/Tabs'
 import { PersonalForm } from '@/components/cv-editor/forms/PersonalForm'
 import { SummaryForm } from '@/components/cv-editor/forms/SummaryForm'
@@ -165,9 +165,7 @@ export function CVEditor({ cvId }: { cvId: string }) {
 
         {/* Right: Live preview */}
         <div className="flex-1 bg-gray-100 overflow-y-auto p-8">
-          <div className="max-w-[210mm] mx-auto shadow-lg">
-            <TemplateRenderer content={content} designConfig={designConfig} />
-          </div>
+          <CVPreview content={content} designConfig={designConfig} />
         </div>
       </div>
     </div>
