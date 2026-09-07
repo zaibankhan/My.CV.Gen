@@ -125,14 +125,49 @@ export function TemplateRenderer({
           color: '#fff',
           padding: '8px 32px'
         }}
-        className="flex flex-wrap gap-4 text-sm"
+        className="flex flex-wrap items-center gap-4 text-sm"
       >
-        {personal.email && <span>{personal.email}</span>}
-        {personal.phone && <span>{personal.phone}</span>}
-        {personal.location && <span>{personal.location}</span>}
-        {personal.website && <span>{personal.website}</span>}
-        {personal.linkedin && <span>linkedin.com/in/{personal.linkedin}</span>}
-        {personal.github && <span>github.com/{personal.github}</span>}
+        {personal.email && (
+          <a
+            href={`mailto:${personal.email}`}
+            className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity"
+          >
+            ✉️ <span>{personal.email}</span>
+          </a>
+        )}
+        {personal.phone && (
+          <a
+            href={`tel:${personal.phone.replace(/[^\d+]/g, '')}`}
+            className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity"
+          >
+            📞 <span>{personal.phone}</span>
+          </a>
+        )}
+        {personal.location && (
+          <span className="flex items-center gap-1.5 opacity-90">
+            📍 <span>{personal.location}</span>
+          </span>
+        )}
+        {personal.website && (
+          <a
+            href={personal.website}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity"
+          >
+            🌐 <span>{personal.website}</span>
+          </a>
+        )}
+        {personal.linkedin && (
+          <span className="flex items-center gap-1.5 opacity-90">
+            💼 <span>linkedin.com/in/{personal.linkedin}</span>
+          </span>
+        )}
+        {personal.github && (
+          <span className="flex items-center gap-1.5 opacity-90">
+            🐙 <span>github.com/{personal.github}</span>
+          </span>
+        )}
       </div>
 
       {/* Body */}
@@ -310,13 +345,26 @@ function SidebarLayout({
   const showSections = designConfig.showSections
 
   const contactItems = [
-    personal.email && { label: 'Email', value: personal.email },
-    personal.phone && { label: 'Phone', value: personal.phone },
+    personal.email && { label: 'Email', value: personal.email, href: `mailto:${personal.email}` },
+    personal.phone && { label: 'Phone', value: personal.phone, href: `tel:${personal.phone.replace(/[^\d+]/g, '')}` },
     personal.location && { label: 'Location', value: personal.location },
-    personal.website && { label: 'Website', value: personal.website },
+    personal.website && { label: 'Website', value: personal.website, href: personal.website },
     personal.linkedin && { label: 'LinkedIn', value: personal.linkedin },
     personal.github && { label: 'GitHub', value: personal.github }
-  ].filter(Boolean) as { label: string; value: string }[]
+  ].filter(Boolean) as {
+    label: string
+    value: string
+    href?: string
+  }[]
+
+  const CONTACT_ICONS: Record<string, string> = {
+    Email: '✉️',
+    Phone: '📞',
+    Location: '📍',
+    Website: '🌐',
+    LinkedIn: '💼',
+    GitHub: '🐙'
+  }
 
   return (
     <div className="flex w-full">
@@ -336,8 +384,26 @@ function SidebarLayout({
         <div className="space-y-3 mb-6">
           {contactItems.map((item, i) => (
             <div key={i} className="text-xs break-words">
-              <div className="font-semibold opacity-90">{item.label}</div>
-              <div className="opacity-80">{item.value}</div>
+              {item.href ? (
+                <a
+                  href={item.href}
+                  target={item.href.startsWith('tel') || item.href.startsWith('mailto') ? undefined : '_blank'}
+                  rel="noreferrer"
+                  className="block"
+                >
+                  <div className="font-semibold opacity-90">
+                    {CONTACT_ICONS[item.label] || ''} {item.label}
+                  </div>
+                  <div className="opacity-80">{item.value}</div>
+                </a>
+              ) : (
+                <>
+                  <div className="font-semibold opacity-90">
+                    {CONTACT_ICONS[item.label] || ''} {item.label}
+                  </div>
+                  <div className="opacity-80">{item.value}</div>
+                </>
+              )}
             </div>
           ))}
         </div>
