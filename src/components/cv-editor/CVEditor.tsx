@@ -127,34 +127,38 @@ export function CVEditor({ cvId }: { cvId: string }) {
       {/* Editor body */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Editor panel */}
-        <div className="w-[420px] border-r bg-white overflow-y-auto flex flex-col">
-          <AIGeneratePanel />
+        <div className="w-[460px] shrink-0 border-r bg-white flex flex-col">
           <Tabs
             tabs={[
-              { id: 'content', label: 'Content' },
+              { id: 'content', label: 'Content & AI' },
               { id: 'design', label: 'Design' }
             ]}
             active={activeTab}
             onChange={setActiveTab}
           />
           {activeTab === 'content' ? (
-            <div className="p-4 space-y-3 flex-1 overflow-y-auto">
-              <p className="text-[11px] text-gray-600 bg-primary-50 border border-primary-100 rounded-lg px-3 py-2">
-                <span className="font-semibold text-primary-800">
-                  Everything here is editable.
-                </span>{' '}
-                Change your name, title, location or any imported detail — the
-                preview updates instantly.
-              </p>
-              <PersonalForm />
-              <SummaryForm />
-              <ExperienceForm />
-              <EducationForm />
-              <SkillsForm />
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-3 space-y-3">
+                <p className="text-[11px] text-gray-600 bg-primary-50 border border-primary-100 rounded-lg px-3 py-2">
+                  <span className="font-semibold text-primary-800">
+                    Everything here is editable.
+                  </span>{' '}
+                  Change your name, title, location or any imported detail —
+                  the preview updates instantly.
+                </p>
+                <AIGeneratePanel />
+                <PersonalForm />
+                <SummaryForm />
+                <ExperienceForm />
+                <EducationForm />
+                <SkillsForm />
+              </div>
             </div>
           ) : (
-            <div className="p-4 flex-1 overflow-y-auto">
-              <DesignPanel />
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-4">
+                <DesignPanel />
+              </div>
             </div>
           )}
         </div>

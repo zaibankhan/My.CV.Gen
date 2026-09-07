@@ -187,10 +187,11 @@ export function AIGeneratePanel() {
   }
 
   return (
-    <div className="border-b border-gray-200">
+    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-primary-50 hover:bg-primary-100 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2.5 bg-primary-50 hover:bg-primary-100 transition-colors"
+        type="button"
       >
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary-600" />
@@ -202,7 +203,7 @@ export function AIGeneratePanel() {
       </button>
 
       {expanded && (
-        <div className="p-4 space-y-4">
+        <div className="p-3 space-y-3 border-t border-primary-100">
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">
               Target Job Description (optional)
