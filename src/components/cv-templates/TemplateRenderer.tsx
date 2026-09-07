@@ -102,7 +102,7 @@ export function TemplateRenderer({
         }}
         className="flex items-center justify-between"
       >
-        <div>
+        <div className="min-w-0">
           <h1
             style={{
               fontFamily: fonts.headingFont,
@@ -116,6 +116,13 @@ export function TemplateRenderer({
             {personal.jobTitle || 'Professional Title'}
           </p>
         </div>
+        {personal.photo && (
+          <img
+            src={personal.photo}
+            alt="Profile"
+            className="w-20 h-20 rounded-full object-cover border-2 border-white shadow shrink-0"
+          />
+        )}
       </div>
 
       {/* Contact bar */}
@@ -369,18 +376,27 @@ function SidebarLayout({
   return (
     <div className="flex w-full">
       {/* Sidebar */}
-      <aside
-        style={{
-          background: colors.primary,
-          color: '#fff',
-          width: '70mm',
-          padding: '24px 20px',
-          flexShrink: 0
-        }}
-      >
-        <div className="text-[10px] uppercase tracking-wider opacity-80 mb-3">
-          Contact
-        </div>
+<aside
+          style={{
+            background: colors.primary,
+            color: '#fff',
+            width: '70mm',
+            padding: '24px 20px',
+            flexShrink: 0
+          }}
+        >
+          {personal.photo && (
+            <div className="flex justify-center mb-5">
+              <img
+                src={personal.photo}
+                alt="Profile"
+                className="w-24 h-24 rounded-full object-cover border-2 border-white/80"
+              />
+            </div>
+          )}
+          <div className="text-[10px] uppercase tracking-wider opacity-80 mb-3">
+            Contact
+          </div>
         <div className="space-y-3 mb-6">
           {contactItems.map((item, i) => (
             <div key={i} className="text-xs break-words">

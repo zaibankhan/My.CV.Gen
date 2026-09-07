@@ -219,7 +219,8 @@ export const EMPTY_CV_CONTENT = {
     location: '',
     website: '',
     linkedin: '',
-    github: ''
+    github: '',
+    photo: ''
   },
   summary: '',
   experience: [

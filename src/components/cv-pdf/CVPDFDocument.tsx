@@ -5,6 +5,7 @@ import {
   Page,
   Text,
   View,
+  Image,
   StyleSheet
 } from '@react-pdf/renderer'
 import type { CvContent, DesignConfig } from '@/types/cv'
@@ -60,6 +61,23 @@ export function CVPDFDocument({ content, designConfig }: CVPDFDocumentProps) {
     // Header
     header: {
       marginBottom: 16
+    },
+    headerRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start'
+    },
+    headerText: {
+      flex: 1,
+      paddingRight: 12
+    },
+    photo: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      objectFit: 'cover',
+      borderWidth: 1,
+      borderColor: colors.primary
     },
     name: {
       fontSize: headingFontSize + 8,
@@ -166,12 +184,19 @@ export function CVPDFDocument({ content, designConfig }: CVPDFDocumentProps) {
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.name}>
-            {personal.fullName || 'Your Name'}
-          </Text>
-          <Text style={styles.title}>
-            {personal.jobTitle || 'Professional Title'}
-          </Text>
+          <View style={styles.headerRow}>
+            <View style={styles.headerText}>
+              <Text style={styles.name}>
+                {personal.fullName || 'Your Name'}
+              </Text>
+              <Text style={styles.title}>
+                {personal.jobTitle || 'Professional Title'}
+              </Text>
+            </View>
+            {personal.photo && (
+              <Image src={personal.photo} style={styles.photo} />
+            )}
+          </View>
           {(personal.email ||
             personal.phone ||
             personal.location ||
