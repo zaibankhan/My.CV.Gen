@@ -49,8 +49,8 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
       const w = rect.width
       const h = rect.height
       if (w <= 0 || h <= 0) return
-      // Fit the page to cover the whole preview pane (tiny inset so the
-      // floating pager toolbar never clips it)
+      // Fit the page to cover the whole preview pane (tiny inset so nothing
+      // is ever clipped)
       const availW = Math.max(120, w - 8)
       const availH = Math.max(120, h - 8)
       setScale(Math.max(0.25, Math.min(availW / PAGE_W, availH / PAGE_H)))
@@ -86,9 +86,9 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
 
       <div
         ref={containerRef}
-        className="relative w-full h-full flex items-center justify-center bg-gray-100 overflow-hidden"
+        className="w-full h-full flex flex-col items-center justify-center bg-gray-100 overflow-hidden"
       >
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 bg-white/85 backdrop-blur border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-3 shadow-sm">
+        <div className="sticky top-0 z-20 mb-3 bg-gray-100/80 backdrop-blur border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-3 shadow-sm">
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0}
@@ -111,32 +111,34 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
           </button>
         </div>
 
-        <div
-          className="relative bg-white shadow-lg"
-          style={{
-            width: PAGE_W * scale,
-            height: PAGE_H * scale,
-            overflow: 'hidden'
-          }}
-        >
+        <div className="flex-1 w-full flex flex-col items-center justify-center min-h-0">
           <div
+            className="relative bg-white shadow-lg"
             style={{
-              transform: `scale(${scale})`,
-              transformOrigin: 'top left',
-              width: PAGE_W,
-              height: PAGE_H,
+              width: PAGE_W * scale,
+              height: PAGE_H * scale,
               overflow: 'hidden'
             }}
           >
             <div
-              className="will-change-transform"
               style={{
-                transform: `translateY(-${page * PAGE_H}px)`,
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
                 width: PAGE_W,
-                minHeight: PAGE_H
+                height: PAGE_H,
+                overflow: 'hidden'
               }}
             >
-              <TemplateRenderer content={content} designConfig={designConfig} />
+              <div
+                className="will-change-transform"
+                style={{
+                  transform: `translateY(-${page * PAGE_H}px)`,
+                  width: PAGE_W,
+                  minHeight: PAGE_H
+                }}
+              >
+                <TemplateRenderer content={content} designConfig={designConfig} />
+              </div>
             </div>
           </div>
         </div>
