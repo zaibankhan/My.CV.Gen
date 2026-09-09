@@ -49,11 +49,13 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
       const w = rect.width
       const h = rect.height
       if (w <= 0 || h <= 0) return
-      // Fit the page to cover the whole preview pane (tiny inset so nothing
-      // is ever clipped)
-      const availW = Math.max(120, w - 8)
-      const availH = Math.max(120, h - 8)
-      setScale(Math.max(0.25, Math.min(availW / PAGE_W, availH / PAGE_H)))
+      // Prefer fitting the page WIDTH (full-size, readable page like the
+      // original preview). Only fall back to height-fit when the width-fit
+      // would leave the page taller than the pane on very narrow screens.
+      // Never upscale beyond natural 1:1 for crispness.
+      const fitW = (w - 16) / PAGE_W
+      const fitH = (h - 8) / PAGE_H
+      setScale(Math.max(0.25, Math.min(1, Math.max(fitW, fitH))))
     }
 
     updateScale()
@@ -86,9 +88,9 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
 
       <div
         ref={containerRef}
-        className="w-full h-full flex flex-col items-center justify-center bg-gray-100 overflow-hidden"
+        className="w-full h-full overflow-y-auto bg-gray-100"
       >
-        <div className="sticky top-0 z-20 mb-3 bg-gray-100/80 backdrop-blur border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-3 shadow-sm">
+        <div className="sticky top-0 z-20 bg-gray-100/80 backdrop-blur border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-3 shadow-sm m-2 mb-3 w-fit">
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0}
@@ -111,7 +113,7 @@ export function CVPreview({ content, designConfig }: CVPreviewProps) {
           </button>
         </div>
 
-        <div className="flex-1 w-full flex flex-col items-center justify-center min-h-0">
+        <div className="flex flex-col items-center py-2">
           <div
             className="relative bg-white shadow-lg"
             style={{
