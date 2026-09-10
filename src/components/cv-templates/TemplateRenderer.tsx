@@ -25,18 +25,24 @@ export function TemplateRenderer({
   const sectionStyles: Record<string, React.CSSProperties> = {
     modern: {
       fontFamily: fonts.headingFont,
-      color: colors.primary
+      color: colors.primary,
+      borderBottom: `2px solid ${colors.accent}`,
+      paddingBottom: '6px'
     },
     classic: {
       fontFamily: fonts.headingFont,
       color: colors.secondary,
       textTransform: 'uppercase' as const,
-      letterSpacing: '0.1em'
+      letterSpacing: '0.1em',
+      borderBottom: `1px solid ${colors.secondary}`,
+      paddingBottom: '6px'
     },
     minimal: {
       fontFamily: fonts.headingFont,
       color: colors.text,
-      fontWeight: 600
+      fontWeight: 600,
+      borderBottom: `2px solid ${colors.accent}`,
+      paddingBottom: '6px'
     },
     creative: {
       fontFamily: fonts.headingFont,
@@ -68,7 +74,9 @@ export function TemplateRenderer({
     pro: {
       fontFamily: fonts.headingFont,
       color: colors.primary,
-      fontWeight: 700
+      fontWeight: 700,
+      borderBottom: `2px solid ${colors.accent}`,
+      paddingBottom: '6px'
     },
     bold: {
       fontFamily: fonts.headingFont,
@@ -126,22 +134,37 @@ export function TemplateRenderer({
             <div className="space-y-4">
               {experience.map((exp, idx) => (
                 <div key={exp.id || idx}>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-semibold text-base">{exp.jobTitle}</h3>
-                      <p className="text-sm text-gray-600">{exp.company}</p>
-                    </div>
-                    <span className="text-sm text-gray-500">
-                      {exp.startDate} - {exp.endDate}
+                  <div className="flex justify-between items-baseline gap-3">
+                    <h3 className="text-[15px] font-semibold text-gray-900">
+                      {exp.jobTitle}
+                      {exp.company && (
+                        <span className="text-gray-600 font-medium"> · {exp.company}</span>
+                      )}
+                    </h3>
+                    <span className="text-xs text-gray-500 whitespace-nowrap shrink-0">
+                      {[exp.startDate, exp.endDate].filter(Boolean).join(' – ')}
                     </span>
                   </div>
-                  <ul className="mt-2 list-disc list-inside space-y-1">
-                    {(exp.bullets || []).map((bullet, bulletIdx) => (
-                      <li key={bulletIdx} className="text-sm ml-2">
-                        {bullet}
-                      </li>
-                    ))}
-                  </ul>
+                  {(exp.bullets || []).filter(Boolean).length > 0 && (
+                    <ul className="mt-1.5 space-y-1">
+                      {(exp.bullets || [])
+                        .filter(Boolean)
+                        .map((bullet, bulletIdx) => (
+                          <li
+                            key={bulletIdx}
+                            className="flex gap-2 text-sm text-gray-700"
+                          >
+                            <span
+                              className="shrink-0 select-none"
+                              style={{ color: colors.accent }}
+                            >
+                              •
+                            </span>
+                            <span className="flex-1">{bullet}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  )}
                 </div>
               ))}
             </div>
@@ -153,11 +176,17 @@ export function TemplateRenderer({
             <div className="space-y-3">
               {education.map((edu, idx) => (
                 <div key={edu.id || idx}>
-                  <h3 className="font-semibold text-base">{edu.degree}</h3>
-                  <p className="text-sm text-gray-600">{edu.institution}</p>
-                  <span className="text-sm text-gray-500">
-                    {edu.startDate} - {edu.endDate}
-                  </span>
+                  <div className="flex justify-between items-baseline gap-3">
+                    <h3 className="text-[15px] font-semibold text-gray-900">
+                      {edu.degree}
+                      {edu.institution && (
+                        <span className="text-gray-600 font-medium"> · {edu.institution}</span>
+                      )}
+                    </h3>
+                    <span className="text-xs text-gray-500 whitespace-nowrap shrink-0">
+                      {[edu.startDate, edu.endDate].filter(Boolean).join(' – ')}
+                    </span>
+                  </div>
                   {edu.description && (
                     <p className="text-sm mt-1">{edu.description}</p>
                   )}
@@ -427,22 +456,37 @@ function SidebarLayout({
             <div className="space-y-4">
               {experience.map((exp, idx) => (
                 <div key={exp.id || idx}>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-semibold text-base">{exp.jobTitle}</h3>
-                      <p className="text-sm text-gray-600">{exp.company}</p>
-                    </div>
-                    <span className="text-sm text-gray-500">
-                      {exp.startDate} - {exp.endDate}
+                  <div className="flex justify-between items-baseline gap-3">
+                    <h3 className="text-[15px] font-semibold text-gray-900">
+                      {exp.jobTitle}
+                      {exp.company && (
+                        <span className="text-gray-600 font-medium"> · {exp.company}</span>
+                      )}
+                    </h3>
+                    <span className="text-xs text-gray-500 whitespace-nowrap shrink-0">
+                      {[exp.startDate, exp.endDate].filter(Boolean).join(' – ')}
                     </span>
                   </div>
-                  <ul className="mt-2 list-disc list-inside space-y-1">
-                    {(exp.bullets || []).map((bullet, bulletIdx) => (
-                      <li key={bulletIdx} className="text-sm ml-2">
-                        {bullet}
-                      </li>
-                    ))}
-                  </ul>
+                  {(exp.bullets || []).filter(Boolean).length > 0 && (
+                    <ul className="mt-1.5 space-y-1">
+                      {(exp.bullets || [])
+                        .filter(Boolean)
+                        .map((bullet, bulletIdx) => (
+                          <li
+                            key={bulletIdx}
+                            className="flex gap-2 text-sm text-gray-700"
+                          >
+                            <span
+                              className="shrink-0 select-none"
+                              style={{ color: colors.accent }}
+                            >
+                              •
+                            </span>
+                            <span className="flex-1">{bullet}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  )}
                 </div>
               ))}
             </div>
@@ -454,11 +498,17 @@ function SidebarLayout({
             <div className="space-y-3">
               {education.map((edu, idx) => (
                 <div key={edu.id || idx}>
-                  <h3 className="font-semibold text-base">{edu.degree}</h3>
-                  <p className="text-sm text-gray-600">{edu.institution}</p>
-                  <span className="text-sm text-gray-500">
-                    {edu.startDate} - {edu.endDate}
-                  </span>
+                  <div className="flex justify-between items-baseline gap-3">
+                    <h3 className="text-[15px] font-semibold text-gray-900">
+                      {edu.degree}
+                      {edu.institution && (
+                        <span className="text-gray-600 font-medium"> · {edu.institution}</span>
+                      )}
+                    </h3>
+                    <span className="text-xs text-gray-500 whitespace-nowrap shrink-0">
+                      {[edu.startDate, edu.endDate].filter(Boolean).join(' – ')}
+                    </span>
+                  </div>
                   {edu.description && (
                     <p className="text-sm mt-1">{edu.description}</p>
                   )}
@@ -515,7 +565,7 @@ function Section({
     <section className="mb-6">
       <h2
         style={style}
-        className="text-lg font-semibold border-b border-gray-200 pb-1.5 mb-3"
+        className="text-[15px] font-bold pb-1.5 mb-3"
       >
         {title}
       </h2>
@@ -815,7 +865,7 @@ function bandContactBar(background: string, children: React.ReactNode) {
         color: '#fff',
         padding: '8px 32px'
       }}
-      className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"
+      className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[13px]"
     >
       {children}
     </div>
